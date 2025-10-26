@@ -92,10 +92,10 @@ export class TutorialScene extends Phaser.Scene {
     // Movement
     if (this.cursors.left.isDown || this.wasd.left.isDown) {
       playerBody.setVelocityX(-200);
-      this.player.setFlipX(true);
+      this.player.setScale(-1, 1); // Flip horizontally
     } else if (this.cursors.right.isDown || this.wasd.right.isDown) {
       playerBody.setVelocityX(200);
-      this.player.setFlipX(false);
+      this.player.setScale(1, 1); // Normal orientation
     } else {
       playerBody.setVelocityX(0);
     }
@@ -121,7 +121,7 @@ export class TutorialScene extends Phaser.Scene {
 
   createCoin(x: number, y: number) {
     const coin = this.add.circle(x, y, 12, 0xFFD700);
-    this.physics.add.existing(coin);
+    this.physics.add.existing(coin, true); // Make it static (immovable)
     this.coins.add(coin);
     
     // Floating animation
