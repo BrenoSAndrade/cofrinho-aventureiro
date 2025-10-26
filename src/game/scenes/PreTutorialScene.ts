@@ -4,6 +4,8 @@ import questionsData from '@/data/questions.json';
 export class PreTutorialScene extends Phaser.Scene {
   private player!: Phaser.Physics.Arcade.Sprite;
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
+  private wasd!: { up: Phaser.Input.Keyboard.Key; left: Phaser.Input.Keyboard.Key; right: Phaser.Input.Keyboard.Key; down: Phaser.Input.Keyboard.Key };
+  private spaceKey!: Phaser.Input.Keyboard.Key;
   private platforms!: Phaser.Physics.Arcade.StaticGroup;
   private coins!: Phaser.Physics.Arcade.Group;
   private npc!: Phaser.GameObjects.Container;
@@ -56,6 +58,14 @@ export class PreTutorialScene extends Phaser.Scene {
 
     // Setup controls
     this.cursors = this.input.keyboard!.createCursorKeys();
+    this.wasd = this.input.keyboard!.addKeys({
+      up: Phaser.Input.Keyboard.KeyCodes.W,
+      left: Phaser.Input.Keyboard.KeyCodes.A,
+      right: Phaser.Input.Keyboard.KeyCodes.D,
+      down: Phaser.Input.Keyboard.KeyCodes.S,
+    }) as any;
+    this.spaceKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+    
     this.input.keyboard!.on('keydown-E', () => {
       if (this.canInteract) {
         this.showQuestion();
@@ -77,10 +87,10 @@ export class PreTutorialScene extends Phaser.Scene {
     const playerBody = this.player.body as Phaser.Physics.Arcade.Body;
 
     // Movement
-    if (this.cursors.left.isDown) {
+    if (this.cursors.left.isDown || this.wasd.left.isDown) {
       playerBody.setVelocityX(-200);
       this.player.setFlipX(true);
-    } else if (this.cursors.right.isDown) {
+    } else if (this.cursors.right.isDown || this.wasd.right.isDown) {
       playerBody.setVelocityX(200);
       this.player.setFlipX(false);
     } else {
@@ -88,7 +98,7 @@ export class PreTutorialScene extends Phaser.Scene {
     }
 
     // Jump
-    if (this.cursors.up.isDown && playerBody.touching.down) {
+    if ((this.cursors.up.isDown || this.wasd.up.isDown || this.spaceKey.isDown) && playerBody.touching.down) {
       playerBody.setVelocityY(-400);
     }
   }
@@ -235,8 +245,8 @@ export class PreTutorialScene extends Phaser.Scene {
     
     const text = this.add.text(width / 2, height / 2,
       'BEM-VINDO AO PRÉ-TUTORIAL!\n\n' +
-      'Use as SETAS para mover\n' +
-      'ESPAÇO para pular\n' +
+      'Use as SETAS ou WASD para mover\n' +
+      'ESPAÇO ou SETA PARA CIMA para pular\n' +
       'E para interagir\n\n' +
       'Colete moedas e vá até o portal!\n\n' +
       'Clique para começar', {

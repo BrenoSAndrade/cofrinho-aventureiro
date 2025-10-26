@@ -32,18 +32,8 @@ export class MenuScene extends Phaser.Scene {
     });
     subtitle.setOrigin(0.5);
 
-    // Create buttons
-    const buttons = [
-      { text: 'JOGAR', action: () => this.startGame() },
-      { text: 'CONTINUAR', action: () => this.continueGame() },
-      { text: 'TUTORIAL', action: () => this.startTutorial() },
-      { text: 'CRÉDITOS', action: () => this.showCredits() },
-    ];
-
-    buttons.forEach((btn, index) => {
-      const y = 220 + index * 60;
-      this.createButton(width / 2, y, btn.text, btn.action);
-    });
+    // Create only JOGAR button
+    this.createButton(width / 2, 280, 'JOGAR', () => this.startGame());
 
     // Footer
     const footer = this.add.text(width / 2, height - 20, 'Projeto de Extensão — Ensino de Educação Financeira', {
@@ -70,17 +60,17 @@ export class MenuScene extends Phaser.Scene {
   createButton(x: number, y: number, text: string, callback: () => void) {
     const button = this.add.container(x, y);
 
+    // Button shadow
+    const shadow = this.add.graphics();
+    shadow.fillStyle(0xB8860B, 1);
+    shadow.fillRoundedRect(-120, -21, 240, 50, 10);
+
     // Button background
     const bg = this.add.graphics();
     bg.fillStyle(0xFFD700, 1);
     bg.fillRoundedRect(-120, -25, 240, 50, 10);
     bg.lineStyle(4, 0xFF8C42, 1);
     bg.strokeRoundedRect(-120, -25, 240, 50, 10);
-
-    // Button shadow
-    const shadow = this.add.graphics();
-    shadow.fillStyle(0xB8860B, 1);
-    shadow.fillRoundedRect(-120, -21, 240, 50, 10);
 
     // Button text
     const buttonText = this.add.text(0, 0, text, {
@@ -92,30 +82,35 @@ export class MenuScene extends Phaser.Scene {
 
     button.add([shadow, bg, buttonText]);
     button.setSize(240, 50);
-    (button as any).setInteractive(new Phaser.Geom.Rectangle(-120, -25, 240, 50), Phaser.Geom.Rectangle.Contains);
+    button.setInteractive(new Phaser.Geom.Rectangle(-120, -25, 240, 50), Phaser.Geom.Rectangle.Contains);
 
     // Hover effect
     button.on('pointerover', () => {
-      button.setScale(1.05);
+      this.tweens.killTweensOf(button);
       this.tweens.add({
         targets: button,
+        scaleX: 1.05,
+        scaleY: 1.05,
         y: y - 5,
-        duration: 100,
-        ease: 'Power2',
+        duration: 150,
+        ease: 'Back.easeOut',
       });
     });
 
     button.on('pointerout', () => {
-      button.setScale(1);
+      this.tweens.killTweensOf(button);
       this.tweens.add({
         targets: button,
+        scaleX: 1,
+        scaleY: 1,
         y: y,
-        duration: 100,
-        ease: 'Power2',
+        duration: 150,
+        ease: 'Back.easeIn',
       });
     });
 
     button.on('pointerdown', () => {
+      this.tweens.killTweensOf(button);
       button.setScale(0.95);
       this.time.delayedCall(100, () => {
         callback();
@@ -126,53 +121,5 @@ export class MenuScene extends Phaser.Scene {
   startGame() {
     this.scene.start('PreTutorialScene');
     this.scene.launch('HUDScene');
-  }
-
-  continueGame() {
-    const gameState = this.registry.get('gameState');
-    const currentLevel = gameState.currentLevel || 'preTutorial';
-    
-    if (currentLevel === 'preTutorial') {
-      this.scene.start('PreTutorialScene');
-    } else if (currentLevel === 'tutorial') {
-      this.scene.start('TutorialScene');
-    }
-    
-    this.scene.launch('HUDScene');
-  }
-
-  startTutorial() {
-    this.scene.start('TutorialScene');
-    this.scene.launch('HUDScene');
-  }
-
-  showCredits() {
-    const { width, height } = this.cameras.main;
-    
-    // Create semi-transparent overlay
-    const overlay = this.add.graphics();
-    overlay.fillStyle(0x000000, 0.7);
-    overlay.fillRect(0, 0, width, height);
-
-    // Credits text
-    const credits = this.add.text(width / 2, height / 2, 
-      'COFRE AVENTUREIRO\n\n' +
-      'Desenvolvido como projeto educativo\n' +
-      'Foco: Educação Financeira Infantil\n\n' +
-      'Para crianças de 7 a 12 anos\n\n' +
-      'Clique para voltar', {
-      fontSize: '20px',
-      color: '#FFFFFF',
-      fontFamily: 'Arial',
-      align: 'center',
-      lineSpacing: 10,
-    });
-    credits.setOrigin(0.5);
-
-    overlay.setInteractive(new Phaser.Geom.Rectangle(0, 0, width, height), Phaser.Geom.Rectangle.Contains);
-    overlay.on('pointerdown', () => {
-      overlay.destroy();
-      credits.destroy();
-    });
   }
 }
