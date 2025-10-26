@@ -1,0 +1,76 @@
+{
+  "preTutorial": {
+    "id": "pre_0",
+    "question": "O que você faz quando encontra moedas? (Escolha a melhor resposta)",
+    "options": [
+      {
+        "id": "A",
+        "text": "Gastar tudo em doces agora",
+        "correct": false,
+        "feedback": "Pode ser divertido, mas gastar tudo impede que você compre coisas maiores depois. Dica: pensar em objetivos ajuda."
+      },
+      {
+        "id": "B",
+        "text": "Guardar em um cofrinho para um objetivo",
+        "correct": true,
+        "feedback": "Muito bem! Guardar para um objetivo é uma boa ideia. +10 PSF."
+      },
+      {
+        "id": "C",
+        "text": "Jogar fora",
+        "correct": false,
+        "feedback": "Jogar fora não faz sentido — moedas têm valor."
+      }
+    ]
+  },
+  "tutorial": [
+    {
+      "id": "tut_1",
+      "question": "O que é uma necessidade?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Brinquedo novo",
+          "correct": false,
+          "feedback": "Brinquedos são desejos — são legais, mas não essenciais para viver."
+        },
+        {
+          "id": "B",
+          "text": "Comida para o dia",
+          "correct": true,
+          "feedback": "Correto — necessidades são coisas que precisamos para viver. +10 PSF. (Explicação curta: comida, casa, roupa.)"
+        },
+        {
+          "id": "C",
+          "text": "Um cartão de jogo",
+          "correct": false,
+          "feedback": "Cartões de jogo são desejos — divertidos, mas não essenciais."
+        }
+      ]
+    },
+    {
+      "id": "tut_2",
+      "question": "Se você quer comprar um brinquedo caro, o que é melhor fazer?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Guardar parte das suas moedas todo mês para comprar depois",
+          "correct": true,
+          "feedback": "Ótimo! Planejar e poupar é uma boa estratégia. +10 PSF."
+        },
+        {
+          "id": "B",
+          "text": "Gastar todas as moedas de uma vez",
+          "correct": false,
+          "feedback": "Gastar tudo de uma vez pode deixar você sem moedas depois. É melhor poupar aos poucos."
+        },
+        {
+          "id": "C",
+          "text": "Pedir para alguém comprar e não pagar",
+          "correct": false,
+          "feedback": "Não pagar não é justo. Poupar e comprar com suas próprias moedas é mais recompensador!"
+        }
+      ]
+    }
+  ]
+}
