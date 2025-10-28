@@ -58,50 +58,53 @@ export class MenuScene extends Phaser.Scene {
   }
 
   createButton(x: number, y: number, text: string, callback: () => void) {
-    const button = this.add.container(x, y);
-
-    // Button shadow
-    const shadow = this.add.graphics();
-    shadow.fillStyle(0xB8860B, 1);
-    shadow.fillRoundedRect(-120, -21, 240, 50, 10);
-
-    // Button background
-    const bg = this.add.graphics();
-    bg.fillStyle(0xFFD700, 1);
-    bg.fillRoundedRect(-120, -25, 240, 50, 10);
-    bg.lineStyle(4, 0xFF8C42, 1);
-    bg.strokeRoundedRect(-120, -25, 240, 50, 10);
-
+    // Create button background as a Rectangle (more reliable for hit detection)
+    const button = this.add.rectangle(x, y, 240, 50, 0xFFD700);
+    button.setStrokeStyle(4, 0xFF8C42);
+    button.setOrigin(0.5);
+    
+    // Add shadow effect
+    const shadow = this.add.rectangle(x, y + 4, 240, 50, 0xB8860B, 0.5);
+    shadow.setOrigin(0.5);
+    
     // Button text
-    const buttonText = this.add.text(0, 0, text, {
+    const buttonText = this.add.text(x, y, text, {
       fontSize: '24px',
       color: '#2D3748',
       fontFamily: 'Arial Black',
     });
     buttonText.setOrigin(0.5);
+    buttonText.setDepth(1);
 
-    button.add([shadow, bg, buttonText]);
-    button.setSize(240, 50);
-    button.setInteractive(new Phaser.Geom.Rectangle(-120, -25, 240, 50), Phaser.Geom.Rectangle.Contains);
+    // Make button interactive
+    button.setInteractive({ useHandCursor: true });
 
-    // Simple hover effect
+    // Hover effects
     button.on('pointerover', () => {
       console.log('Button hover');
       button.setScale(1.05);
+      buttonText.setScale(1.05);
+      shadow.setScale(1.05);
     });
 
     button.on('pointerout', () => {
       button.setScale(1);
+      buttonText.setScale(1);
+      shadow.setScale(1);
     });
 
     button.on('pointerdown', () => {
-      console.log('Button clicked');
+      console.log('Button clicked - calling callback');
       button.setScale(0.95);
+      buttonText.setScale(0.95);
+      shadow.setScale(0.95);
       callback();
     });
 
     button.on('pointerup', () => {
       button.setScale(1);
+      buttonText.setScale(1);
+      shadow.setScale(1);
     });
   }
 
