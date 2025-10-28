@@ -84,37 +84,22 @@ export class MenuScene extends Phaser.Scene {
     button.setSize(240, 50);
     button.setInteractive(new Phaser.Geom.Rectangle(-120, -25, 240, 50), Phaser.Geom.Rectangle.Contains);
 
-    // Hover effect
+    // Simple hover effect
     button.on('pointerover', () => {
-      this.tweens.killTweensOf(button);
-      this.tweens.add({
-        targets: button,
-        scaleX: 1.05,
-        scaleY: 1.05,
-        y: y - 5,
-        duration: 150,
-        ease: 'Back.easeOut',
-      });
+      button.setScale(1.05);
     });
 
     button.on('pointerout', () => {
-      this.tweens.killTweensOf(button);
-      this.tweens.add({
-        targets: button,
-        scaleX: 1,
-        scaleY: 1,
-        y: y,
-        duration: 150,
-        ease: 'Back.easeIn',
-      });
+      button.setScale(1);
     });
 
     button.on('pointerdown', () => {
-      this.tweens.killTweensOf(button);
       button.setScale(0.95);
-      this.time.delayedCall(100, () => {
-        callback();
-      });
+    });
+
+    button.on('pointerup', () => {
+      button.setScale(1);
+      callback();
     });
   }
 
