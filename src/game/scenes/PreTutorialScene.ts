@@ -7,7 +7,7 @@ export class PreTutorialScene extends Phaser.Scene {
   private wasd!: { up: Phaser.Input.Keyboard.Key; left: Phaser.Input.Keyboard.Key; right: Phaser.Input.Keyboard.Key; down: Phaser.Input.Keyboard.Key };
   private spaceKey!: Phaser.Input.Keyboard.Key;
   private platforms!: Phaser.Physics.Arcade.StaticGroup;
-  private coins!: Phaser.Physics.Arcade.Group;
+  private coins!: Phaser.Physics.Arcade.StaticGroup;
   private npc!: Phaser.GameObjects.Container;
   private portal!: Phaser.Physics.Arcade.Sprite;
   private canInteract: boolean = false;
@@ -28,7 +28,7 @@ export class PreTutorialScene extends Phaser.Scene {
 
     // Physics groups
     this.platforms = this.physics.add.staticGroup();
-    this.coins = this.physics.add.group();
+    this.coins = this.physics.add.staticGroup();
 
     // Create ground platform
     const ground = this.add.rectangle(width / 2, height - 20, width, 40, 0x95E77D);

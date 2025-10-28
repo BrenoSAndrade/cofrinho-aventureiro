@@ -7,7 +7,7 @@ export class TutorialScene extends Phaser.Scene {
   private wasd!: { up: Phaser.Input.Keyboard.Key; left: Phaser.Input.Keyboard.Key; right: Phaser.Input.Keyboard.Key; down: Phaser.Input.Keyboard.Key };
   private spaceKey!: Phaser.Input.Keyboard.Key;
   private platforms!: Phaser.Physics.Arcade.StaticGroup;
-  private coins!: Phaser.Physics.Arcade.Group;
+  private coins!: Phaser.Physics.Arcade.StaticGroup;
   private portals!: Phaser.Physics.Arcade.StaticGroup;
   private currentPortal: any = null;
   private canInteract: boolean = false;
@@ -29,7 +29,7 @@ export class TutorialScene extends Phaser.Scene {
 
     // Physics groups
     this.platforms = this.physics.add.staticGroup();
-    this.coins = this.physics.add.group();
+    this.coins = this.physics.add.staticGroup();
     this.portals = this.physics.add.staticGroup();
 
     // Create ground platform
