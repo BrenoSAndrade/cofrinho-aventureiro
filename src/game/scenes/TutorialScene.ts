@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import questionsData from '@/data/questions.json';
 
 export class TutorialScene extends Phaser.Scene {
-  private player!: Phaser.Physics.Arcade.Sprite;
+  private player!: Phaser.GameObjects.Rectangle;
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private wasd!: { up: Phaser.Input.Keyboard.Key; left: Phaser.Input.Keyboard.Key; right: Phaser.Input.Keyboard.Key; down: Phaser.Input.Keyboard.Key };
   private spaceKey!: Phaser.Input.Keyboard.Key;
@@ -106,12 +106,12 @@ export class TutorialScene extends Phaser.Scene {
     }
   }
 
-  createPlayer(x: number, y: number): Phaser.Physics.Arcade.Sprite {
+  createPlayer(x: number, y: number): Phaser.GameObjects.Rectangle {
     const player = this.add.rectangle(x, y, 32, 32, 0xFF8C42);
     this.physics.add.existing(player);
     const body = player.body as Phaser.Physics.Arcade.Body;
     body.setCollideWorldBounds(true);
-    return player as any;
+    return player;
   }
 
   createPlatform(x: number, y: number, width: number, height: number) {

@@ -2,14 +2,14 @@ import Phaser from 'phaser';
 import questionsData from '@/data/questions.json';
 
 export class PreTutorialScene extends Phaser.Scene {
-  private player!: Phaser.Physics.Arcade.Sprite;
+  private player!: Phaser.GameObjects.Rectangle;
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private wasd!: { up: Phaser.Input.Keyboard.Key; left: Phaser.Input.Keyboard.Key; right: Phaser.Input.Keyboard.Key; down: Phaser.Input.Keyboard.Key };
   private spaceKey!: Phaser.Input.Keyboard.Key;
   private platforms!: Phaser.Physics.Arcade.StaticGroup;
   private coins!: Phaser.Physics.Arcade.StaticGroup;
   private npc!: Phaser.GameObjects.Container;
-  private portal!: Phaser.Physics.Arcade.Sprite;
+  private portal!: Phaser.GameObjects.Rectangle;
   private canInteract: boolean = false;
   private questionAnswered: boolean = false;
 
@@ -103,12 +103,12 @@ export class PreTutorialScene extends Phaser.Scene {
     }
   }
 
-  createPlayer(x: number, y: number): Phaser.Physics.Arcade.Sprite {
+  createPlayer(x: number, y: number): Phaser.GameObjects.Rectangle {
     const player = this.add.rectangle(x, y, 32, 32, 0xFF8C42);
     this.physics.add.existing(player);
     const body = player.body as Phaser.Physics.Arcade.Body;
     body.setCollideWorldBounds(true);
-    return player as any;
+    return player;
   }
 
   createPlatform(x: number, y: number, width: number, height: number) {
@@ -200,7 +200,7 @@ export class PreTutorialScene extends Phaser.Scene {
     return container;
   }
 
-  createPortal(x: number, y: number): Phaser.Physics.Arcade.Sprite {
+  createPortal(x: number, y: number): Phaser.GameObjects.Rectangle {
     const portal = this.add.rectangle(x, y, 40, 60, 0x4ECDC4);
     this.physics.add.existing(portal, true);
     
