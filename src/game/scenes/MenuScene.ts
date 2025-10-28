@@ -86,6 +86,7 @@ export class MenuScene extends Phaser.Scene {
 
     // Simple hover effect
     button.on('pointerover', () => {
+      console.log('Button hover');
       button.setScale(1.05);
     });
 
@@ -94,16 +95,19 @@ export class MenuScene extends Phaser.Scene {
     });
 
     button.on('pointerdown', () => {
+      console.log('Button clicked');
       button.setScale(0.95);
+      callback();
     });
 
     button.on('pointerup', () => {
       button.setScale(1);
-      callback();
     });
   }
 
   startGame() {
+    console.log('Starting game...');
+    this.scene.stop('MenuScene');
     this.scene.start('PreTutorialScene');
     this.scene.launch('HUDScene');
   }
