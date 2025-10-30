@@ -203,7 +203,7 @@ export class TutorialScene extends Phaser.Scene {
       'TUTORIAL: PARQUE DA APRENDIZAGEM\n\n' +
       'Você vai responder 2 perguntas!\n\n' +
       'Cada portal tem uma pergunta.\n' +
-      'Responda corretamente para avançar.\n\n' +
+      'Responda corretamente para ganhar Sabedoria! 💡\n\n' +
       'Lembre-se:\n' +
       'SETAS = mover | ESPAÇO = pular\n\n' +
       'Clique para começar', {
@@ -390,11 +390,11 @@ export class TutorialScene extends Phaser.Scene {
     
     const text = this.add.text(width / 2, height / 2,
       '🎉 TUTORIAL COMPLETO! 🎉\n\n' +
-      'Você ganhou +50 PSF de bônus!\n\n' +
+      'Você ganhou +50 💡 de bônus!\n\n' +
       'Você aprendeu sobre:\n' +
       '• Necessidades vs Desejos\n' +
       '• Poupar para objetivos\n\n' +
-      'Total de PSF: ' + gameState.psf + '\n\n' +
+      'Total de Sabedoria: ' + gameState.psf + ' 💡\n\n' +
       'Clique para voltar ao menu', {
       fontSize: '22px',
       color: '#FFD700',

@@ -11,8 +11,8 @@ export class HUDScene extends Phaser.Scene {
   create() {
     const { width } = this.cameras.main;
 
-    // PSF Display (top right)
-    this.psfText = this.add.text(width - 20, 20, 'PSF: 0', {
+    // Sabedoria Display (top right)
+    this.psfText = this.add.text(width - 20, 20, '💡 0', {
       fontSize: '24px',
       color: '#FFD700',
       fontFamily: 'Arial Black',
@@ -45,7 +45,7 @@ export class HUDScene extends Phaser.Scene {
   updateHUD() {
     const gameState = this.registry.get('gameState');
     if (gameState) {
-      this.psfText.setText(`PSF: ${gameState.psf}`);
+      this.psfText.setText(`💡 ${gameState.psf}`);
       this.coinsText.setText(`🪙 ${gameState.coins}`);
     }
   }

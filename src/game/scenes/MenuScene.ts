@@ -43,10 +43,10 @@ export class MenuScene extends Phaser.Scene {
     });
     footer.setOrigin(0.5);
 
-    // Show PSF if available
+    // Show Sabedoria if available
     const gameState = this.registry.get('gameState');
     if (gameState.psf > 0) {
-      const psfText = this.add.text(width - 20, 20, `PSF: ${gameState.psf}`, {
+      const psfText = this.add.text(width - 20, 20, `💡 ${gameState.psf}`, {
         fontSize: '20px',
         color: '#FFD700',
         fontFamily: 'Arial Black',
@@ -110,6 +110,24 @@ export class MenuScene extends Phaser.Scene {
 
   startGame() {
     console.log('Starting game...');
+    
+    // Reset game state
+    const gameState = {
+      psf: 0,
+      coins: 0,
+      currentLevel: 'preTutorial',
+      completedLevels: [],
+    };
+    
+    // Update registry
+    this.registry.set('gameState', gameState);
+    
+    // Clear localStorage
+    localStorage.setItem('psf', '0');
+    localStorage.setItem('coins', '0');
+    localStorage.setItem('currentLevel', 'preTutorial');
+    localStorage.setItem('completedLevels', '[]');
+    
     this.scene.stop('MenuScene');
     this.scene.start('PreTutorialScene');
     this.scene.launch('HUDScene');

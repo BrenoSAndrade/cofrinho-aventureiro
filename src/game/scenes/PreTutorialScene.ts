@@ -9,6 +9,7 @@ export class PreTutorialScene extends Phaser.Scene {
   private platforms!: Phaser.Physics.Arcade.StaticGroup;
   private coins!: Phaser.Physics.Arcade.StaticGroup;
   private npc!: Phaser.GameObjects.Container;
+  private npcSpeechBubble!: Phaser.GameObjects.Container;
   private portal!: Phaser.GameObjects.Rectangle;
   private canInteract: boolean = false;
   private questionAnswered: boolean = false;
@@ -79,6 +80,20 @@ export class PreTutorialScene extends Phaser.Scene {
     if (!this.player || !this.player.body) return;
 
     const playerBody = this.player.body as Phaser.Physics.Arcade.Body;
+
+    // Check distance to NPC to hide/show speech bubble
+    if (this.npc && this.npcSpeechBubble) {
+      const distance = Phaser.Math.Distance.Between(
+        this.player.x, this.player.y,
+        this.npc.x, this.npc.y
+      );
+      
+      if (distance <= 100 && this.npcSpeechBubble.visible) {
+        this.npcSpeechBubble.setVisible(false);
+      } else if (distance > 100 && !this.npcSpeechBubble.visible) {
+        this.npcSpeechBubble.setVisible(true);
+      }
+    }
 
     // Movement
     if (this.cursors.left.isDown || this.wasd.left.isDown) {
@@ -166,8 +181,8 @@ export class PreTutorialScene extends Phaser.Scene {
     
     container.add([body, snout, eye1, eye2]);
     
-    // Speech bubble
-    const bubble = this.add.container(0, -60);
+    // Speech bubble (stored as property for visibility control)
+    this.npcSpeechBubble = this.add.container(0, -60);
     const bubbleBg = this.add.rectangle(0, 0, 200, 80, 0xFFFFFF, 0.95);
     bubbleBg.setStrokeStyle(3, 0x000000);
     const bubbleText = this.add.text(0, 0, 
@@ -178,8 +193,8 @@ export class PreTutorialScene extends Phaser.Scene {
       align: 'center',
     });
     bubbleText.setOrigin(0.5);
-    bubble.add([bubbleBg, bubbleText]);
-    container.add(bubble);
+    this.npcSpeechBubble.add([bubbleBg, bubbleText]);
+    container.add(this.npcSpeechBubble);
     
     // Floating animation
     this.tweens.add({
