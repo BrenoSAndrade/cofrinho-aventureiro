@@ -65,12 +65,6 @@ export class TutorialScene extends Phaser.Scene {
       down: Phaser.Input.Keyboard.KeyCodes.S,
     }) as any;
     this.spaceKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-    
-    this.input.keyboard!.on('keydown-E', () => {
-      if (this.canInteract && this.currentPortal) {
-        this.showQuestion(this.currentPortal.questionIndex);
-      }
-    });
 
     // Collisions
     this.physics.add.collider(this.player, this.platforms);
@@ -188,27 +182,13 @@ export class TutorialScene extends Phaser.Scene {
       strokeThickness: 4,
     });
     number.setOrigin(0.5);
-    
-    // Add "E" prompt
-    const prompt = this.add.text(x, y - 50, 'Pressione E', {
-      fontSize: '14px',
-      color: '#FFFFFF',
-      fontFamily: 'Arial',
-      backgroundColor: '#000000',
-      padding: { x: 8, y: 4 },
-    });
-    prompt.setOrigin(0.5);
-    prompt.setVisible(false);
-    (portal as any).prompt = prompt;
   }
 
   nearPortal(player: any, portal: any) {
-    if (!portal.answered) {
-      this.canInteract = true;
+    if (!portal.answered && !portal.showing) {
+      portal.showing = true;
       this.currentPortal = portal;
-      if (portal.prompt) {
-        portal.prompt.setVisible(true);
-      }
+      this.showQuestion(portal.questionIndex);
     }
   }
 
@@ -225,7 +205,7 @@ export class TutorialScene extends Phaser.Scene {
       'Cada portal tem uma pergunta.\n' +
       'Responda corretamente para avançar.\n\n' +
       'Lembre-se:\n' +
-      'SETAS = mover | ESPAÇO = pular | E = interagir\n\n' +
+      'SETAS = mover | ESPAÇO = pular\n\n' +
       'Clique para começar', {
       fontSize: '18px',
       color: '#FFFFFF',
@@ -268,14 +248,14 @@ export class TutorialScene extends Phaser.Scene {
     // Create option buttons
     question.options.forEach((option, optIndex) => {
       const y = -60 + optIndex * 90;
-      const button = this.createOptionButton(0, y, option, () => {
+      const [bg, text] = this.createOptionButton(0, y, option, () => {
         this.handleAnswer(option, modal, index);
       });
-      modal.add(button);
+      modal.add([bg, text]);
     });
   }
 
-  createOptionButton(x: number, y: number, option: any, callback: () => void) {
+  createOptionButton(x: number, y: number, option: any, callback: () => void): [Phaser.GameObjects.Rectangle, Phaser.GameObjects.Text] {
     // Create button background as Rectangle (better hit detection)
     const bg = this.add.rectangle(x, y, 500, 60, 0x4ECDC4);
     bg.setStrokeStyle(3, 0x000000);
@@ -314,7 +294,7 @@ export class TutorialScene extends Phaser.Scene {
       text.setScale(1);
     });
     
-    return bg;
+    return [bg, text];
   }
 
   handleAnswer(option: any, modal: Phaser.GameObjects.Container, questionIndex: number) {
@@ -330,10 +310,8 @@ export class TutorialScene extends Phaser.Scene {
         modal.destroy();
         if (this.currentPortal) {
           this.currentPortal.answered = true;
+          this.currentPortal.showing = false;
           this.currentPortal.setAlpha(0.3);
-          if (this.currentPortal.prompt) {
-            this.currentPortal.prompt.setVisible(false);
-          }
         }
         this.questionsAnswered++;
         

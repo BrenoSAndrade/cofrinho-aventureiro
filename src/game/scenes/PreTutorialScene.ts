@@ -65,12 +65,6 @@ export class PreTutorialScene extends Phaser.Scene {
       down: Phaser.Input.Keyboard.KeyCodes.S,
     }) as any;
     this.spaceKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-    
-    this.input.keyboard!.on('keydown-E', () => {
-      if (this.canInteract) {
-        this.showQuestion();
-      }
-    });
 
     // Collisions
     this.physics.add.collider(this.player, this.platforms);
@@ -214,25 +208,13 @@ export class PreTutorialScene extends Phaser.Scene {
       ease: 'Sine.easeInOut',
     });
     
-    // Add "E" prompt above portal
-    const prompt = this.add.text(x, y - 40, 'Pressione E', {
-      fontSize: '14px',
-      color: '#FFFFFF',
-      fontFamily: 'Arial',
-      backgroundColor: '#000000',
-      padding: { x: 8, y: 4 },
-    });
-    prompt.setOrigin(0.5);
-    prompt.setVisible(false);
-    (portal as any).prompt = prompt;
-    
     return portal as any;
   }
 
   nearPortal(player: any, portal: any) {
-    this.canInteract = true;
-    if (portal.prompt && !this.questionAnswered) {
-      portal.prompt.setVisible(true);
+    if (!this.questionAnswered && !this.canInteract) {
+      this.canInteract = true;
+      this.showQuestion();
     }
   }
 
@@ -246,8 +228,7 @@ export class PreTutorialScene extends Phaser.Scene {
     const text = this.add.text(width / 2, height / 2,
       'BEM-VINDO AO PRÉ-TUTORIAL!\n\n' +
       'Use as SETAS ou WASD para mover\n' +
-      'ESPAÇO ou SETA PARA CIMA para pular\n' +
-      'E para interagir\n\n' +
+      'ESPAÇO ou SETA PARA CIMA para pular\n\n' +
       'Colete moedas e vá até o portal!\n\n' +
       'Clique para começar', {
       fontSize: '20px',
@@ -293,14 +274,14 @@ export class PreTutorialScene extends Phaser.Scene {
     // Create option buttons
     question.options.forEach((option, index) => {
       const y = -60 + index * 80;
-      const button = this.createOptionButton(0, y, option, () => {
+      const [bg, text] = this.createOptionButton(0, y, option, () => {
         this.handleAnswer(option, modal);
       });
-      modal.add(button);
+      modal.add([bg, text]);
     });
   }
 
-  createOptionButton(x: number, y: number, option: any, callback: () => void) {
+  createOptionButton(x: number, y: number, option: any, callback: () => void): [Phaser.GameObjects.Rectangle, Phaser.GameObjects.Text] {
     // Create button background as Rectangle (better hit detection)
     const bg = this.add.rectangle(x, y, 500, 60, 0x4ECDC4);
     bg.setStrokeStyle(3, 0x000000);
@@ -339,7 +320,7 @@ export class PreTutorialScene extends Phaser.Scene {
       text.setScale(1);
     });
     
-    return bg;
+    return [bg, text];
   }
 
   handleAnswer(option: any, modal: Phaser.GameObjects.Container) {
