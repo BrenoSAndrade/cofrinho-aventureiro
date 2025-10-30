@@ -301,34 +301,45 @@ export class PreTutorialScene extends Phaser.Scene {
   }
 
   createOptionButton(x: number, y: number, option: any, callback: () => void) {
-    const button = this.add.container(x, y);
-    
-    const bg = this.add.rectangle(0, 0, 500, 60, 0x4ECDC4);
+    // Create button background as Rectangle (better hit detection)
+    const bg = this.add.rectangle(x, y, 500, 60, 0x4ECDC4);
     bg.setStrokeStyle(3, 0x000000);
+    bg.setOrigin(0.5);
+    bg.setInteractive({ useHandCursor: true });
     
-    const text = this.add.text(0, 0, `${option.id}) ${option.text}`, {
+    const text = this.add.text(x, y, `${option.id}) ${option.text}`, {
       fontSize: '16px',
       color: '#000000',
       fontFamily: 'Arial',
       wordWrap: { width: 480 },
     });
     text.setOrigin(0.5);
+    text.setDepth(1);
     
-    button.add([bg, text]);
-    button.setSize(500, 60);
-    button.setInteractive(new Phaser.Geom.Rectangle(-250, -30, 500, 60), Phaser.Geom.Rectangle.Contains);
-    
-    button.on('pointerover', () => {
+    bg.on('pointerover', () => {
       bg.setFillStyle(0x95E77D);
+      bg.setScale(1.02);
+      text.setScale(1.02);
     });
     
-    button.on('pointerout', () => {
+    bg.on('pointerout', () => {
       bg.setFillStyle(0x4ECDC4);
+      bg.setScale(1);
+      text.setScale(1);
     });
     
-    button.on('pointerdown', callback);
+    bg.on('pointerdown', () => {
+      bg.setScale(0.98);
+      text.setScale(0.98);
+      callback();
+    });
     
-    return button;
+    bg.on('pointerup', () => {
+      bg.setScale(1);
+      text.setScale(1);
+    });
+    
+    return bg;
   }
 
   handleAnswer(option: any, modal: Phaser.GameObjects.Container) {
