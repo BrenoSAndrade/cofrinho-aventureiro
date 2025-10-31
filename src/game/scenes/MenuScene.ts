@@ -8,103 +8,124 @@ export class MenuScene extends Phaser.Scene {
   create() {
     const { width, height } = this.cameras.main;
 
-    // Background gradient
-    const graphics = this.add.graphics();
-    graphics.fillGradientStyle(0x87CEEB, 0x87CEEB, 0xFFE4B5, 0xFFE4B5, 1);
-    graphics.fillRect(0, 0, width, height);
+    // Pixel art sky background
+    const bg = this.add.image(width / 2, height / 2, 'pixel-sky-bg');
+    bg.setDisplaySize(width, height);
 
-    // Title
-    const title = this.add.text(width / 2, 80, 'COFRE AVENTUREIRO', {
-      fontSize: '48px',
-      color: '#FFD700',
-      fontFamily: 'Arial Black',
-      stroke: '#FF8C42',
-      strokeThickness: 6,
+    // Title with pixel font
+    const title = this.add.text(width / 2, 80, 'COFRE\nAVENTUREIRO', {
+      fontSize: '32px',
+      color: '#FFCD00',
+      fontFamily: 'Press Start 2P',
+      align: 'center',
+      lineSpacing: 10,
     });
     title.setOrigin(0.5);
-    title.setShadow(4, 4, '#000000', 4);
+    // Pixel shadow (no blur)
+    title.setShadow(3, 3, '#000000', 0, false, true);
 
     // Subtitle
-    const subtitle = this.add.text(width / 2, 140, 'Aprenda sobre dinheiro enquanto se diverte!', {
-      fontSize: '18px',
-      color: '#4A5568',
-      fontFamily: 'Arial',
+    const subtitle = this.add.text(width / 2, 150, 'Aprenda sobre\ndinheiro!', {
+      fontSize: '12px',
+      color: '#FF8C42',
+      fontFamily: 'Press Start 2P',
+      align: 'center',
+      lineSpacing: 8,
     });
     subtitle.setOrigin(0.5);
 
-    // Create only JOGAR button
-    this.createButton(width / 2, 280, 'JOGAR', () => this.startGame());
+    // JOGAR button using sprite
+    this.createButton(width / 2, 250, 'JOGAR', () => this.startGame());
 
     // Footer
-    const footer = this.add.text(width / 2, height - 20, 'Projeto de Extensão — Ensino de Educação Financeira', {
-      fontSize: '12px',
+    const footer = this.add.text(width / 2, height - 30, 'Projeto de Extensao\nEducacao Financeira', {
+      fontSize: '8px',
       color: '#718096',
-      fontFamily: 'Arial',
+      fontFamily: 'Press Start 2P',
+      align: 'center',
+      lineSpacing: 6,
     });
     footer.setOrigin(0.5);
 
     // Show Sabedoria if available
     const gameState = this.registry.get('gameState');
     if (gameState.psf > 0) {
-      const psfText = this.add.text(width - 20, 20, `💡 ${gameState.psf}`, {
-        fontSize: '20px',
-        color: '#FFD700',
-        fontFamily: 'Arial Black',
-        stroke: '#000000',
-        strokeThickness: 3,
+      // Wisdom icon sprite (we'll use text for now as icon)
+      const psfContainer = this.add.container(width - 30, 20);
+      
+      const psfBg = this.add.rectangle(0, 0, 80, 30, 0x2C3E50);
+      psfBg.setStrokeStyle(2, 0xFFCD00);
+      
+      const psfText = this.add.text(0, 0, `${gameState.psf}`, {
+        fontSize: '16px',
+        color: '#FFCD00',
+        fontFamily: 'Press Start 2P',
       });
-      psfText.setOrigin(1, 0);
+      psfText.setOrigin(0.5);
+      
+      psfContainer.add([psfBg, psfText]);
+      psfContainer.setDepth(10);
     }
   }
 
   createButton(x: number, y: number, text: string, callback: () => void) {
-    // Create button background as a Rectangle (more reliable for hit detection)
-    const button = this.add.rectangle(x, y, 240, 50, 0xFFD700);
-    button.setStrokeStyle(4, 0xFF8C42);
-    button.setOrigin(0.5);
+    // Button container
+    const container = this.add.container(x, y);
     
-    // Add shadow effect
-    const shadow = this.add.rectangle(x, y + 4, 240, 50, 0xB8860B, 0.5);
-    shadow.setOrigin(0.5);
+    // Button sprite as background
+    const buttonBg = this.add.image(0, 0, 'button-pixel');
+    buttonBg.setDisplaySize(200, 50);
     
-    // Button text
-    const buttonText = this.add.text(x, y, text, {
-      fontSize: '24px',
+    // Button shadow (pixel style - below button)
+    const shadow = this.add.rectangle(3, 3, 200, 50, 0xA34300);
+    shadow.setDepth(-1);
+    
+    // Button text with pixel font
+    const buttonText = this.add.text(0, 0, text, {
+      fontSize: '16px',
       color: '#2D3748',
-      fontFamily: 'Arial Black',
+      fontFamily: 'Press Start 2P',
     });
     buttonText.setOrigin(0.5);
-    buttonText.setDepth(1);
-
+    
+    container.add([shadow, buttonBg, buttonText]);
+    
     // Make button interactive
-    button.setInteractive({ useHandCursor: true });
+    const hitArea = new Phaser.Geom.Rectangle(-100, -25, 200, 50);
+    container.setInteractive(hitArea, Phaser.Geom.Rectangle.Contains);
+    container.setSize(200, 50);
 
-    // Hover effects
-    button.on('pointerover', () => {
-      console.log('Button hover');
-      button.setScale(1.05);
-      buttonText.setScale(1.05);
-      shadow.setScale(1.05);
+    // Hover effects (pixel style - no smooth scaling)
+    container.on('pointerover', () => {
+      buttonBg.setTint(0xFFFFAA);
+      this.tweens.add({
+        targets: container,
+        y: y - 2,
+        duration: 50,
+        ease: 'Linear',
+      });
     });
 
-    button.on('pointerout', () => {
-      button.setScale(1);
-      buttonText.setScale(1);
-      shadow.setScale(1);
+    container.on('pointerout', () => {
+      buttonBg.clearTint();
+      this.tweens.add({
+        targets: container,
+        y: y,
+        duration: 50,
+        ease: 'Linear',
+      });
     });
 
-    button.on('pointerdown', () => {
-      console.log('Button clicked - calling callback');
-      button.setScale(0.95);
-      buttonText.setScale(0.95);
-      shadow.setScale(0.95);
-      callback();
-    });
-
-    button.on('pointerup', () => {
-      button.setScale(1);
-      buttonText.setScale(1);
-      shadow.setScale(1);
+    container.on('pointerdown', () => {
+      this.tweens.add({
+        targets: container,
+        y: y + 2,
+        duration: 50,
+        ease: 'Linear',
+        onComplete: () => {
+          callback();
+        },
+      });
     });
   }
 

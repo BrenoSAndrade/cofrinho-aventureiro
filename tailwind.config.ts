@@ -57,6 +57,18 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        'game-sky': "hsl(var(--game-sky))",
+        'game-ground': "hsl(var(--game-ground))",
+        'game-coin': "hsl(var(--game-coin))",
+        'game-platform': "hsl(var(--game-platform))",
+        'game-player': "hsl(var(--game-player))",
+        'game-npc': "hsl(var(--game-npc))",
+        'game-portal-purple': "hsl(var(--game-portal-purple))",
+        'game-portal-cyan': "hsl(var(--game-portal-cyan))",
+      },
+      fontFamily: {
+        sans: ["Inter", "sans-serif"],
+        pixel: ["Press Start 2P", "monospace"],
       },
       borderRadius: {
         lg: "var(--radius)",
