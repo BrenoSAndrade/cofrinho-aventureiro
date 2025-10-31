@@ -13,6 +13,7 @@ export class PreTutorialScene extends Phaser.Scene {
   private portal!: Phaser.GameObjects.Rectangle;
   private canInteract: boolean = false;
   private questionAnswered: boolean = false;
+  private npcBubbleHidden: boolean = false;
 
   constructor() {
     super({ key: 'PreTutorialScene' });
@@ -81,17 +82,16 @@ export class PreTutorialScene extends Phaser.Scene {
 
     const playerBody = this.player.body as Phaser.Physics.Arcade.Body;
 
-    // Check distance to NPC to hide/show speech bubble
-    if (this.npc && this.npcSpeechBubble) {
+    // Check distance to NPC to hide speech bubble permanently
+    if (this.npc && this.npcSpeechBubble && !this.npcBubbleHidden) {
       const distance = Phaser.Math.Distance.Between(
         this.player.x, this.player.y,
         this.npc.x, this.npc.y
       );
       
-      if (distance <= 100 && this.npcSpeechBubble.visible) {
+      if (distance <= 100) {
         this.npcSpeechBubble.setVisible(false);
-      } else if (distance > 100 && !this.npcSpeechBubble.visible) {
-        this.npcSpeechBubble.setVisible(true);
+        this.npcBubbleHidden = true; // Hide permanently
       }
     }
 
