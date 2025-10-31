@@ -185,7 +185,18 @@ export class TutorialScene extends Phaser.Scene {
   }
 
   nearPortal(player: any, portal: any) {
-    if (!portal.answered && !portal.showing) {
+    // Check if player is still overlapping the portal
+    const isOverlapping = Phaser.Geom.Intersects.RectangleToRectangle(
+      player.getBounds(),
+      portal.getBounds()
+    );
+    
+    if (!isOverlapping && portal.showing) {
+      // Player left the portal area, reset showing flag
+      portal.showing = false;
+    }
+    
+    if (!portal.answered && !portal.showing && isOverlapping) {
       portal.showing = true;
       this.currentPortal = portal;
       this.showQuestion(portal.questionIndex);
