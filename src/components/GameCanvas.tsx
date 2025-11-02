@@ -4,6 +4,9 @@ import { BootScene } from '@/game/scenes/BootScene';
 import { MenuScene } from '@/game/scenes/MenuScene';
 import { PreTutorialScene } from '@/game/scenes/PreTutorialScene';
 import { TutorialScene } from '@/game/scenes/TutorialScene';
+import { Level1Scene } from '@/game/scenes/Level1Scene';
+import { Level2Scene } from '@/game/scenes/Level2Scene';
+import { Level3Scene } from '@/game/scenes/Level3Scene';
 import { HUDScene } from '@/game/scenes/HUDScene';
 
 export const GameCanvas = () => {
@@ -26,7 +29,7 @@ export const GameCanvas = () => {
           debug: false,
         },
       },
-      scene: [BootScene, MenuScene, PreTutorialScene, TutorialScene, HUDScene],
+      scene: [BootScene, MenuScene, PreTutorialScene, TutorialScene, Level1Scene, Level2Scene, Level3Scene, HUDScene],
       scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,

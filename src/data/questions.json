@@ -13,7 +13,7 @@
         "id": "B",
         "text": "Guardar em um cofrinho para um objetivo",
         "correct": true,
-        "feedback": "Muito bem! Guardar para um objetivo é uma boa ideia. +10 PSF."
+        "feedback": "Muito bem! Guardar para um objetivo é uma boa ideia. +10 Sabedoria."
       },
       {
         "id": "C",
@@ -38,7 +38,7 @@
           "id": "B",
           "text": "Comida para o dia",
           "correct": true,
-          "feedback": "Correto — necessidades são coisas que precisamos para viver. +10 PSF. (Explicação curta: comida, casa, roupa.)"
+          "feedback": "Correto — necessidades são coisas que precisamos para viver. +10 Sabedoria. (Explicação curta: comida, casa, roupa.)"
         },
         {
           "id": "C",
@@ -56,7 +56,7 @@
           "id": "A",
           "text": "Guardar parte das suas moedas todo mês para comprar depois",
           "correct": true,
-          "feedback": "Ótimo! Planejar e poupar é uma boa estratégia. +10 PSF."
+          "feedback": "Ótimo! Planejar e poupar é uma boa estratégia. +10 Sabedoria."
         },
         {
           "id": "B",
@@ -69,6 +69,228 @@
           "text": "Pedir para alguém comprar e não pagar",
           "correct": false,
           "feedback": "Não pagar não é justo. Poupar e comprar com suas próprias moedas é mais recompensador!"
+        }
+      ]
+    }
+  ],
+  "level1": [
+    {
+      "id": "lvl1_1",
+      "question": "Quando você ganha uma mesada, o que é bom fazer com uma parte dela?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Gastar tudo no mesmo dia",
+          "correct": false,
+          "feedback": "Gastar tudo de uma vez não é uma boa ideia. É melhor guardar um pouco para o futuro."
+        },
+        {
+          "id": "B",
+          "text": "Guardar um pouco para depois",
+          "correct": true,
+          "feedback": "Perfeito! Guardar uma parte do dinheiro é muito importante. +10 Sabedoria."
+        },
+        {
+          "id": "C",
+          "text": "Jogar fora o dinheiro",
+          "correct": false,
+          "feedback": "Jogar dinheiro fora não faz sentido. Dinheiro tem valor!"
+        }
+      ]
+    },
+    {
+      "id": "lvl1_2",
+      "question": "O que significa economizar?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Gastar tudo de uma vez",
+          "correct": false,
+          "feedback": "Não, economizar é o contrário de gastar tudo!"
+        },
+        {
+          "id": "B",
+          "text": "Guardar dinheiro para o futuro",
+          "correct": true,
+          "feedback": "Exatamente! Economizar é guardar dinheiro para usar depois. +10 Sabedoria."
+        },
+        {
+          "id": "C",
+          "text": "Comprar mais brinquedos",
+          "correct": false,
+          "feedback": "Comprar não é economizar. Economizar é guardar!"
+        }
+      ]
+    },
+    {
+      "id": "lvl1_3",
+      "question": "Se você quer comprar um brinquedo caro, o que deve fazer?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Esperar e juntar dinheiro",
+          "correct": true,
+          "feedback": "Muito bem! Ter paciência e juntar dinheiro é a melhor escolha. +10 Sabedoria."
+        },
+        {
+          "id": "B",
+          "text": "Pedir emprestado e não devolver",
+          "correct": false,
+          "feedback": "Não devolver o que é emprestado não é justo. Sempre devemos devolver!"
+        },
+        {
+          "id": "C",
+          "text": "Comprar qualquer coisa no lugar",
+          "correct": false,
+          "feedback": "Se você quer algo específico, é melhor guardar para comprar o que realmente quer."
+        }
+      ]
+    }
+  ],
+  "level2": [
+    {
+      "id": "lvl2_1",
+      "question": "Você tem dinheiro para comprar um lanche ou um brinquedo, mas não os dois. O que é uma boa escolha?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Pensar bem no que é mais importante",
+          "correct": true,
+          "feedback": "Ótimo! Pensar antes de comprar é muito importante. +10 Sabedoria."
+        },
+        {
+          "id": "B",
+          "text": "Comprar os dois mesmo sem ter dinheiro",
+          "correct": false,
+          "feedback": "Não podemos comprar o que não temos dinheiro para pagar."
+        },
+        {
+          "id": "C",
+          "text": "Não pensar e gastar rápido",
+          "correct": false,
+          "feedback": "É importante sempre pensar antes de gastar!"
+        }
+      ]
+    },
+    {
+      "id": "lvl2_2",
+      "question": "Quando algo está muito barato, o que devemos fazer antes de comprar?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Ver se realmente precisamos daquilo",
+          "correct": true,
+          "feedback": "Excelente! Sempre devemos pensar se realmente precisamos. +10 Sabedoria."
+        },
+        {
+          "id": "B",
+          "text": "Comprar só porque está barato",
+          "correct": false,
+          "feedback": "Só porque está barato não significa que precisamos comprar!"
+        },
+        {
+          "id": "C",
+          "text": "Ignorar e gastar tudo",
+          "correct": false,
+          "feedback": "Nunca devemos gastar sem pensar!"
+        }
+      ]
+    },
+    {
+      "id": "lvl2_3",
+      "question": "O que é mais importante:",
+      "options": [
+        {
+          "id": "A",
+          "text": "Gastar todo o dinheiro com doces",
+          "correct": false,
+          "feedback": "Gastar tudo não é uma boa ideia!"
+        },
+        {
+          "id": "B",
+          "text": "Guardar e planejar o que comprar",
+          "correct": true,
+          "feedback": "Perfeito! Planejar é essencial para fazer boas escolhas. +10 Sabedoria."
+        },
+        {
+          "id": "C",
+          "text": "Comprar o que os outros compram",
+          "correct": false,
+          "feedback": "Devemos comprar o que precisamos, não copiar os outros!"
+        }
+      ]
+    }
+  ],
+  "level3": [
+    {
+      "id": "lvl3_1",
+      "question": "O que é uma meta financeira?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Um sonho que queremos alcançar juntando dinheiro",
+          "correct": true,
+          "feedback": "Isso mesmo! Uma meta é um objetivo que queremos alcançar. +10 Sabedoria."
+        },
+        {
+          "id": "B",
+          "text": "Um brinquedo novo",
+          "correct": false,
+          "feedback": "Um brinquedo pode ser parte de uma meta, mas não é o significado de meta."
+        },
+        {
+          "id": "C",
+          "text": "Algo que não precisa de planejamento",
+          "correct": false,
+          "feedback": "Metas sempre precisam de planejamento!"
+        }
+      ]
+    },
+    {
+      "id": "lvl3_2",
+      "question": "Se você quer juntar dinheiro por vários meses, o que precisa ter?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Paciência e disciplina",
+          "correct": true,
+          "feedback": "Exatamente! Guardar dinheiro exige paciência e disciplina. +10 Sabedoria."
+        },
+        {
+          "id": "B",
+          "text": "Sorte",
+          "correct": false,
+          "feedback": "Não é sorte, é esforço e dedicação!"
+        },
+        {
+          "id": "C",
+          "text": "Muitos brinquedos",
+          "correct": false,
+          "feedback": "Brinquedos não ajudam a juntar dinheiro!"
+        }
+      ]
+    },
+    {
+      "id": "lvl3_3",
+      "question": "Por que é bom ter um cofrinho?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Para guardar o dinheiro com segurança",
+          "correct": true,
+          "feedback": "Correto! O cofrinho ajuda a guardar dinheiro de forma segura. +10 Sabedoria."
+        },
+        {
+          "id": "B",
+          "text": "Para brincar com ele",
+          "correct": false,
+          "feedback": "O cofrinho não é um brinquedo, é para guardar dinheiro!"
+        },
+        {
+          "id": "C",
+          "text": "Para gastar mais rápido",
+          "correct": false,
+          "feedback": "O cofrinho é para guardar, não para gastar rápido!"
         }
       ]
     }

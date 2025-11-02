@@ -342,9 +342,9 @@ export class PreTutorialScene extends Phaser.Scene {
     if (option.correct) {
       // Correct answer
       const gameState = this.registry.get('gameState');
-      gameState.psf += 10;
+      gameState.sabedoria += 10;
       this.registry.set('gameState', gameState);
-      localStorage.setItem('psf', gameState.psf.toString());
+      localStorage.setItem('sabedoria', gameState.sabedoria.toString());
       this.game.events.emit('updateHUD');
       
       this.showFeedback(option.feedback, true, () => {

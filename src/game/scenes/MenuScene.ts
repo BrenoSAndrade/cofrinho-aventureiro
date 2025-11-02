@@ -45,15 +45,15 @@ export class MenuScene extends Phaser.Scene {
 
     // Show Sabedoria if available
     const gameState = this.registry.get('gameState');
-    if (gameState.psf > 0) {
-      const psfText = this.add.text(width - 20, 20, `💡 ${gameState.psf}`, {
+    if (gameState.sabedoria > 0) {
+      const sabedoriaText = this.add.text(width - 20, 20, `💡 ${gameState.sabedoria}`, {
         fontSize: '20px',
         color: '#FFD700',
         fontFamily: 'Arial Black',
         stroke: '#000000',
         strokeThickness: 3,
       });
-      psfText.setOrigin(1, 0);
+      sabedoriaText.setOrigin(1, 0);
     }
   }
 
@@ -113,7 +113,7 @@ export class MenuScene extends Phaser.Scene {
     
     // Reset game state
     const gameState = {
-      psf: 0,
+      sabedoria: 0,
       coins: 0,
       currentLevel: 'preTutorial',
       completedLevels: [],
@@ -123,7 +123,7 @@ export class MenuScene extends Phaser.Scene {
     this.registry.set('gameState', gameState);
     
     // Clear localStorage
-    localStorage.setItem('psf', '0');
+    localStorage.setItem('sabedoria', '0');
     localStorage.setItem('coins', '0');
     localStorage.setItem('currentLevel', 'preTutorial');
     localStorage.setItem('completedLevels', '[]');

@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import questionsData from '@/data/questions.json';
 
-export class TutorialScene extends Phaser.Scene {
+export class Level3Scene extends Phaser.Scene {
   private player!: Phaser.GameObjects.Rectangle;
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private wasd!: { up: Phaser.Input.Keyboard.Key; left: Phaser.Input.Keyboard.Key; right: Phaser.Input.Keyboard.Key; down: Phaser.Input.Keyboard.Key };
@@ -10,22 +10,20 @@ export class TutorialScene extends Phaser.Scene {
   private coins!: Phaser.Physics.Arcade.StaticGroup;
   private portals!: Phaser.Physics.Arcade.StaticGroup;
   private currentPortal: any = null;
-  private canInteract: boolean = false;
-  private currentQuestionIndex: number = 0;
   private questionsAnswered: number = 0;
 
   constructor() {
-    super({ key: 'TutorialScene' });
+    super({ key: 'Level3Scene' });
   }
 
   create() {
     const { width, height } = this.cameras.main;
 
-    // Background
+    // Background (park style - lighter green)
     this.add.rectangle(0, 0, width, height, 0x87CEEB).setOrigin(0);
     
-    // Ground
-    this.add.rectangle(0, height - 40, width, 40, 0x8B7355).setOrigin(0);
+    // Ground (grass)
+    this.add.rectangle(0, height - 40, width, 40, 0x228B22).setOrigin(0);
 
     // Physics groups
     this.platforms = this.physics.add.staticGroup();
@@ -33,28 +31,33 @@ export class TutorialScene extends Phaser.Scene {
     this.portals = this.physics.add.staticGroup();
 
     // Create ground platform
-    const ground = this.add.rectangle(width / 2, height - 20, width, 40, 0x8B7355);
+    const ground = this.add.rectangle(width / 2, height - 20, width, 40, 0x228B22);
     this.platforms.add(ground);
 
-    // Create platforms
-    this.createPlatform(150, height - 100, 100, 20);
-    this.createPlatform(300, height - 180, 120, 20);
-    this.createPlatform(500, height - 260, 100, 20);
-    this.createPlatform(650, height - 180, 120, 20);
+    // Longer platforms
+    this.createPlatform(180, height - 120, 140, 20);
+    this.createPlatform(400, height - 190, 160, 20);
+    this.createPlatform(630, height - 120, 140, 20);
 
-    // Create coins
-    for (let i = 0; i < 8; i++) {
-      const x = 100 + i * 90;
-      const y = height - 140 - Math.sin(i) * 60;
-      this.createCoin(x, y);
-    }
+    // Small trap holes (visual only)
+    this.createTrap(320, height - 50);
+    this.createTrap(550, height - 50);
+
+    // Create coins (some higher up)
+    this.createCoin(200, height - 160);
+    this.createCoin(250, height - 160);
+    this.createCoin(420, height - 240);
+    this.createCoin(480, height - 240);
+    this.createCoin(650, height - 170);
+    this.createCoin(700, height - 170);
+    this.createCoin(100, height - 80);
+    this.createCoin(150, height - 80);
 
     // Create player
-    this.player = this.createPlayer(80, height - 100);
+    this.player = this.createPlayer(50, height - 100);
 
-    // Create portals for questions
-    this.createPortal(320, height - 230, 0);
-    this.createPortal(680, height - 230, 1);
+    // Create golden piggy bank at the end (final goal)
+    this.createGoal(730, height - 80);
 
     // Setup controls
     this.cursors = this.input.keyboard!.createCursorKeys();
@@ -69,7 +72,7 @@ export class TutorialScene extends Phaser.Scene {
     // Collisions
     this.physics.add.collider(this.player, this.platforms);
     this.physics.add.overlap(this.player, this.coins, this.collectCoin as any, undefined, this);
-    this.physics.add.overlap(this.player, this.portals, this.nearPortal as any, undefined, this);
+    this.physics.add.overlap(this.player, this.portals, this.nearGoal as any, undefined, this);
 
     // Show intro text
     this.showIntroText();
@@ -80,16 +83,13 @@ export class TutorialScene extends Phaser.Scene {
 
     const playerBody = this.player.body as Phaser.Physics.Arcade.Body;
 
-    // Reset interaction state
-    this.canInteract = false;
-
     // Movement
     if (this.cursors.left.isDown || this.wasd.left.isDown) {
       playerBody.setVelocityX(-200);
-      this.player.setScale(-1, 1); // Flip horizontally
+      this.player.setScale(-1, 1);
     } else if (this.cursors.right.isDown || this.wasd.right.isDown) {
       playerBody.setVelocityX(200);
-      this.player.setScale(1, 1); // Normal orientation
+      this.player.setScale(1, 1);
     } else {
       playerBody.setVelocityX(0);
     }
@@ -113,12 +113,17 @@ export class TutorialScene extends Phaser.Scene {
     this.platforms.add(platform);
   }
 
+  createTrap(x: number, y: number) {
+    // Visual trap indicator (darker rectangle on ground)
+    const trap = this.add.rectangle(x, y, 40, 10, 0x2F4F2F);
+    trap.setStrokeStyle(1, 0x000000);
+  }
+
   createCoin(x: number, y: number) {
     const coin = this.add.circle(x, y, 12, 0xFFD700);
-    this.physics.add.existing(coin, true); // Make it static (immovable)
+    this.physics.add.existing(coin, true);
     this.coins.add(coin);
     
-    // Floating animation
     this.tweens.add({
       targets: coin,
       y: y - 10,
@@ -155,40 +160,50 @@ export class TutorialScene extends Phaser.Scene {
     });
   }
 
-  createPortal(x: number, y: number, questionIndex: number) {
-    const portal = this.add.rectangle(x, y, 50, 70, 0x9370DB);
-    portal.setStrokeStyle(4, 0xFFD700);
-    this.portals.add(portal);
+  createGoal(x: number, y: number) {
+    // Create a golden piggy bank (final trophy)
+    const container = this.add.container(x, y);
     
-    (portal as any).questionIndex = questionIndex;
-    (portal as any).answered = false;
+    const body = this.add.circle(0, 0, 28, 0xFFD700);
+    body.setStrokeStyle(3, 0xFFA500);
+    const snout = this.add.ellipse(12, 5, 18, 14, 0xFFE55C);
+    const eye1 = this.add.circle(-10, -10, 5, 0x000000);
+    const eye2 = this.add.circle(10, -10, 5, 0x000000);
     
-    // Glow effect
+    container.add([body, snout, eye1, eye2]);
+    
+    // Add sparkle effect
+    const sparkle = this.add.star(0, -35, 5, 8, 15, 0xFFFFFF);
+    container.add(sparkle);
+    
     this.tweens.add({
-      targets: portal,
-      alpha: 0.6,
-      duration: 1000,
+      targets: sparkle,
+      angle: 360,
+      duration: 3000,
+      repeat: -1,
+    });
+    
+    // Add physics
+    const portal = this.add.rectangle(x, y, 60, 60, 0x000000, 0);
+    this.physics.add.existing(portal, true);
+    this.portals.add(portal);
+    (portal as any).reached = false;
+    
+    // Floating animation
+    this.tweens.add({
+      targets: container,
+      y: y - 8,
+      duration: 2000,
       yoyo: true,
       repeat: -1,
       ease: 'Sine.easeInOut',
     });
-    
-    // Add number indicator
-    const number = this.add.text(x, y, `${questionIndex + 1}`, {
-      fontSize: '24px',
-      color: '#FFFFFF',
-      fontFamily: 'Arial Black',
-      stroke: '#000000',
-      strokeThickness: 4,
-    });
-    number.setOrigin(0.5);
   }
 
-  nearPortal(player: any, portal: any) {
-    if (!portal.answered && !portal.showing) {
-      portal.showing = true;
-      this.currentPortal = portal;
-      this.showQuestion(portal.questionIndex);
+  nearGoal(player: any, portal: any) {
+    if (!portal.reached) {
+      portal.reached = true;
+      this.showQuestions();
     }
   }
 
@@ -200,12 +215,11 @@ export class TutorialScene extends Phaser.Scene {
     overlay.setDepth(1000);
     
     const text = this.add.text(width / 2, height / 2,
-      'TUTORIAL: PARQUE DA APRENDIZAGEM\n\n' +
-      'Você vai responder 2 perguntas!\n\n' +
-      'Cada portal tem uma pergunta.\n' +
-      'Responda corretamente para ganhar Sabedoria! 💡\n\n' +
-      'Lembre-se:\n' +
-      'SETAS = mover | ESPAÇO = pular\n\n' +
+      'NÍVEL 3: PLANEJANDO O FUTURO\n\n' +
+      'Bem-vindo ao parque!\n\n' +
+      'Última missão: colete moedas e alcance\n' +
+      'o cofrinho dourado!\n\n' +
+      'Cuidado com os buracos!\n\n' +
       'Clique para começar', {
       fontSize: '18px',
       color: '#FFFFFF',
@@ -223,19 +237,22 @@ export class TutorialScene extends Phaser.Scene {
     });
   }
 
+  showQuestions() {
+    this.showQuestion(0);
+  }
+
   showQuestion(index: number) {
     const { width, height } = this.cameras.main;
-    const question = questionsData.tutorial[index];
+    const question = questionsData.level3[index];
     
-    // Create question modal
     const modal = this.add.container(width / 2, height / 2);
     modal.setDepth(2000);
     
     const bg = this.add.rectangle(0, 0, 650, 450, 0xFFFFFF);
-    bg.setStrokeStyle(6, 0x9370DB);
+    bg.setStrokeStyle(6, 0xFFD700);
     
     const questionText = this.add.text(0, -160, question.question, {
-      fontSize: '20px',
+      fontSize: '18px',
       color: '#000000',
       fontFamily: 'Arial Bold',
       align: 'center',
@@ -245,7 +262,6 @@ export class TutorialScene extends Phaser.Scene {
     
     modal.add([bg, questionText]);
     
-    // Create option buttons
     question.options.forEach((option, optIndex) => {
       const y = -60 + optIndex * 90;
       const [bg, text] = this.createOptionButton(0, y, option, () => {
@@ -256,7 +272,6 @@ export class TutorialScene extends Phaser.Scene {
   }
 
   createOptionButton(x: number, y: number, option: any, callback: () => void): [Phaser.GameObjects.Rectangle, Phaser.GameObjects.Text] {
-    // Create button background as Rectangle (better hit detection)
     const bg = this.add.rectangle(x, y, 500, 60, 0x4ECDC4);
     bg.setStrokeStyle(3, 0x000000);
     bg.setOrigin(0.5);
@@ -299,7 +314,6 @@ export class TutorialScene extends Phaser.Scene {
 
   handleAnswer(option: any, modal: Phaser.GameObjects.Container, questionIndex: number) {
     if (option.correct) {
-      // Correct answer
       const gameState = this.registry.get('gameState');
       gameState.sabedoria += 10;
       this.registry.set('gameState', gameState);
@@ -308,22 +322,16 @@ export class TutorialScene extends Phaser.Scene {
       
       this.showFeedback(option.feedback, true, () => {
         modal.destroy();
-        if (this.currentPortal) {
-          this.currentPortal.answered = true;
-          this.currentPortal.showing = false;
-          this.currentPortal.setAlpha(0.3);
-        }
         this.questionsAnswered++;
         
-        if (this.questionsAnswered >= 2) {
+        if (this.questionsAnswered >= 3) {
           this.completeLevel();
+        } else {
+          this.showQuestion(questionIndex + 1);
         }
       });
     } else {
-      // Wrong answer
-      this.showFeedback(option.feedback, false, () => {
-        // Allow retry
-      });
+      this.showFeedback(option.feedback, false, () => {});
     }
   }
 
@@ -379,37 +387,38 @@ export class TutorialScene extends Phaser.Scene {
     const { width, height } = this.cameras.main;
     
     const gameState = this.registry.get('gameState');
-    gameState.sabedoria += 50; // Bonus for completing level
+    gameState.sabedoria += 50;
     this.registry.set('gameState', gameState);
     localStorage.setItem('sabedoria', gameState.sabedoria.toString());
     this.game.events.emit('updateHUD');
     
-    const overlay = this.add.rectangle(0, 0, width, height, 0x000000, 0.8);
+    const overlay = this.add.rectangle(0, 0, width, height, 0x000000, 0.9);
     overlay.setOrigin(0);
     overlay.setDepth(4000);
     
     const text = this.add.text(width / 2, height / 2,
-      '🎉 TUTORIAL COMPLETO! 🎉\n\n' +
-      'Você ganhou +50 💡 de bônus!\n\n' +
-      'Você aprendeu sobre:\n' +
-      '• Necessidades vs Desejos\n' +
-      '• Poupar para objetivos\n\n' +
-      'Total de Sabedoria: ' + gameState.sabedoria + ' 💡\n\n' +
-      'Clique para o próximo nível', {
-      fontSize: '22px',
+      '🎉🎉 PARABÉNS! 🎉🎉\n\n' +
+      'VOCÊ COMPLETOU TODOS OS NÍVEIS!\n\n' +
+      'Você ganhou +50 💡 de bônus final!\n\n' +
+      '🏆 MESTRE DA EDUCAÇÃO FINANCEIRA! 🏆\n\n' +
+      'Total de Sabedoria: ' + gameState.sabedoria + ' 💡\n' +
+      'Moedas coletadas: ' + gameState.coins + ' 🪙\n\n' +
+      'Clique para voltar ao menu', {
+      fontSize: '20px',
       color: '#FFD700',
       fontFamily: 'Arial Black',
       align: 'center',
-      lineSpacing: 12,
+      lineSpacing: 14,
       stroke: '#000000',
-      strokeThickness: 4,
+      strokeThickness: 5,
     });
     text.setOrigin(0.5);
     text.setDepth(4001);
     
     overlay.setInteractive();
     overlay.once('pointerdown', () => {
-      this.scene.start('Level1Scene');
+      this.scene.stop('HUDScene');
+      this.scene.start('MenuScene');
     });
   }
 }

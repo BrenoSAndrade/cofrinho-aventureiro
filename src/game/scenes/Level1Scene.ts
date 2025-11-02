@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import questionsData from '@/data/questions.json';
 
-export class TutorialScene extends Phaser.Scene {
+export class Level1Scene extends Phaser.Scene {
   private player!: Phaser.GameObjects.Rectangle;
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private wasd!: { up: Phaser.Input.Keyboard.Key; left: Phaser.Input.Keyboard.Key; right: Phaser.Input.Keyboard.Key; down: Phaser.Input.Keyboard.Key };
@@ -10,12 +10,10 @@ export class TutorialScene extends Phaser.Scene {
   private coins!: Phaser.Physics.Arcade.StaticGroup;
   private portals!: Phaser.Physics.Arcade.StaticGroup;
   private currentPortal: any = null;
-  private canInteract: boolean = false;
-  private currentQuestionIndex: number = 0;
   private questionsAnswered: number = 0;
 
   constructor() {
-    super({ key: 'TutorialScene' });
+    super({ key: 'Level1Scene' });
   }
 
   create() {
@@ -24,7 +22,7 @@ export class TutorialScene extends Phaser.Scene {
     // Background
     this.add.rectangle(0, 0, width, height, 0x87CEEB).setOrigin(0);
     
-    // Ground
+    // Ground (dirt)
     this.add.rectangle(0, height - 40, width, 40, 0x8B7355).setOrigin(0);
 
     // Physics groups
@@ -36,25 +34,27 @@ export class TutorialScene extends Phaser.Scene {
     const ground = this.add.rectangle(width / 2, height - 20, width, 40, 0x8B7355);
     this.platforms.add(ground);
 
-    // Create platforms
-    this.createPlatform(150, height - 100, 100, 20);
-    this.createPlatform(300, height - 180, 120, 20);
-    this.createPlatform(500, height - 260, 100, 20);
-    this.createPlatform(650, height - 180, 120, 20);
+    // Simple platforms (small holes to jump)
+    this.createPlatform(150, height - 100, 80, 20);
+    this.createPlatform(320, height - 140, 100, 20);
+    this.createPlatform(520, height - 100, 80, 20);
+
+    // Static obstacle (box)
+    this.createObstacle(400, height - 60, 30, 30);
 
     // Create coins
-    for (let i = 0; i < 8; i++) {
-      const x = 100 + i * 90;
-      const y = height - 140 - Math.sin(i) * 60;
-      this.createCoin(x, y);
-    }
+    this.createCoin(180, height - 140);
+    this.createCoin(350, height - 180);
+    this.createCoin(550, height - 140);
+    this.createCoin(250, height - 80);
+    this.createCoin(450, height - 80);
+    this.createCoin(650, height - 80);
 
     // Create player
-    this.player = this.createPlayer(80, height - 100);
+    this.player = this.createPlayer(50, height - 100);
 
-    // Create portals for questions
-    this.createPortal(320, height - 230, 0);
-    this.createPortal(680, height - 230, 1);
+    // Create piggy bank at the end (goal)
+    this.createGoal(720, height - 80);
 
     // Setup controls
     this.cursors = this.input.keyboard!.createCursorKeys();
@@ -69,7 +69,7 @@ export class TutorialScene extends Phaser.Scene {
     // Collisions
     this.physics.add.collider(this.player, this.platforms);
     this.physics.add.overlap(this.player, this.coins, this.collectCoin as any, undefined, this);
-    this.physics.add.overlap(this.player, this.portals, this.nearPortal as any, undefined, this);
+    this.physics.add.overlap(this.player, this.portals, this.nearGoal as any, undefined, this);
 
     // Show intro text
     this.showIntroText();
@@ -80,16 +80,13 @@ export class TutorialScene extends Phaser.Scene {
 
     const playerBody = this.player.body as Phaser.Physics.Arcade.Body;
 
-    // Reset interaction state
-    this.canInteract = false;
-
     // Movement
     if (this.cursors.left.isDown || this.wasd.left.isDown) {
       playerBody.setVelocityX(-200);
-      this.player.setScale(-1, 1); // Flip horizontally
+      this.player.setScale(-1, 1);
     } else if (this.cursors.right.isDown || this.wasd.right.isDown) {
       playerBody.setVelocityX(200);
-      this.player.setScale(1, 1); // Normal orientation
+      this.player.setScale(1, 1);
     } else {
       playerBody.setVelocityX(0);
     }
@@ -113,12 +110,17 @@ export class TutorialScene extends Phaser.Scene {
     this.platforms.add(platform);
   }
 
+  createObstacle(x: number, y: number, width: number, height: number) {
+    const obstacle = this.add.rectangle(x, y, width, height, 0x654321);
+    obstacle.setStrokeStyle(2, 0x000000);
+    this.platforms.add(obstacle);
+  }
+
   createCoin(x: number, y: number) {
     const coin = this.add.circle(x, y, 12, 0xFFD700);
-    this.physics.add.existing(coin, true); // Make it static (immovable)
+    this.physics.add.existing(coin, true);
     this.coins.add(coin);
     
-    // Floating animation
     this.tweens.add({
       targets: coin,
       y: y - 10,
@@ -155,40 +157,38 @@ export class TutorialScene extends Phaser.Scene {
     });
   }
 
-  createPortal(x: number, y: number, questionIndex: number) {
-    const portal = this.add.rectangle(x, y, 50, 70, 0x9370DB);
-    portal.setStrokeStyle(4, 0xFFD700);
+  createGoal(x: number, y: number) {
+    // Create a piggy bank goal
+    const container = this.add.container(x, y);
+    
+    const body = this.add.circle(0, 0, 24, 0xFF69B4);
+    const snout = this.add.ellipse(10, 5, 16, 12, 0xFFC0CB);
+    const eye1 = this.add.circle(-8, -8, 4, 0x000000);
+    const eye2 = this.add.circle(8, -8, 4, 0x000000);
+    
+    container.add([body, snout, eye1, eye2]);
+    
+    // Add physics to the container's position
+    const portal = this.add.rectangle(x, y, 50, 50, 0x000000, 0);
+    this.physics.add.existing(portal, true);
     this.portals.add(portal);
+    (portal as any).reached = false;
     
-    (portal as any).questionIndex = questionIndex;
-    (portal as any).answered = false;
-    
-    // Glow effect
+    // Floating animation
     this.tweens.add({
-      targets: portal,
-      alpha: 0.6,
-      duration: 1000,
+      targets: container,
+      y: y - 5,
+      duration: 2000,
       yoyo: true,
       repeat: -1,
       ease: 'Sine.easeInOut',
     });
-    
-    // Add number indicator
-    const number = this.add.text(x, y, `${questionIndex + 1}`, {
-      fontSize: '24px',
-      color: '#FFFFFF',
-      fontFamily: 'Arial Black',
-      stroke: '#000000',
-      strokeThickness: 4,
-    });
-    number.setOrigin(0.5);
   }
 
-  nearPortal(player: any, portal: any) {
-    if (!portal.answered && !portal.showing) {
-      portal.showing = true;
-      this.currentPortal = portal;
-      this.showQuestion(portal.questionIndex);
+  nearGoal(player: any, portal: any) {
+    if (!portal.reached) {
+      portal.reached = true;
+      this.showQuestions();
     }
   }
 
@@ -200,12 +200,10 @@ export class TutorialScene extends Phaser.Scene {
     overlay.setDepth(1000);
     
     const text = this.add.text(width / 2, height / 2,
-      'TUTORIAL: PARQUE DA APRENDIZAGEM\n\n' +
-      'Você vai responder 2 perguntas!\n\n' +
-      'Cada portal tem uma pergunta.\n' +
-      'Responda corretamente para ganhar Sabedoria! 💡\n\n' +
-      'Lembre-se:\n' +
-      'SETAS = mover | ESPAÇO = pular\n\n' +
+      'NÍVEL 1: O VALOR DE GUARDAR DINHEIRO\n\n' +
+      'Bem-vindo ao bairro!\n\n' +
+      'Colete moedas e chegue até o cofrinho.\n' +
+      'Cuidado com os obstáculos!\n\n' +
       'Clique para começar', {
       fontSize: '18px',
       color: '#FFFFFF',
@@ -223,19 +221,22 @@ export class TutorialScene extends Phaser.Scene {
     });
   }
 
+  showQuestions() {
+    this.showQuestion(0);
+  }
+
   showQuestion(index: number) {
     const { width, height } = this.cameras.main;
-    const question = questionsData.tutorial[index];
+    const question = questionsData.level1[index];
     
-    // Create question modal
     const modal = this.add.container(width / 2, height / 2);
     modal.setDepth(2000);
     
     const bg = this.add.rectangle(0, 0, 650, 450, 0xFFFFFF);
-    bg.setStrokeStyle(6, 0x9370DB);
+    bg.setStrokeStyle(6, 0xFF69B4);
     
     const questionText = this.add.text(0, -160, question.question, {
-      fontSize: '20px',
+      fontSize: '18px',
       color: '#000000',
       fontFamily: 'Arial Bold',
       align: 'center',
@@ -245,7 +246,6 @@ export class TutorialScene extends Phaser.Scene {
     
     modal.add([bg, questionText]);
     
-    // Create option buttons
     question.options.forEach((option, optIndex) => {
       const y = -60 + optIndex * 90;
       const [bg, text] = this.createOptionButton(0, y, option, () => {
@@ -256,7 +256,6 @@ export class TutorialScene extends Phaser.Scene {
   }
 
   createOptionButton(x: number, y: number, option: any, callback: () => void): [Phaser.GameObjects.Rectangle, Phaser.GameObjects.Text] {
-    // Create button background as Rectangle (better hit detection)
     const bg = this.add.rectangle(x, y, 500, 60, 0x4ECDC4);
     bg.setStrokeStyle(3, 0x000000);
     bg.setOrigin(0.5);
@@ -299,7 +298,6 @@ export class TutorialScene extends Phaser.Scene {
 
   handleAnswer(option: any, modal: Phaser.GameObjects.Container, questionIndex: number) {
     if (option.correct) {
-      // Correct answer
       const gameState = this.registry.get('gameState');
       gameState.sabedoria += 10;
       this.registry.set('gameState', gameState);
@@ -308,22 +306,16 @@ export class TutorialScene extends Phaser.Scene {
       
       this.showFeedback(option.feedback, true, () => {
         modal.destroy();
-        if (this.currentPortal) {
-          this.currentPortal.answered = true;
-          this.currentPortal.showing = false;
-          this.currentPortal.setAlpha(0.3);
-        }
         this.questionsAnswered++;
         
-        if (this.questionsAnswered >= 2) {
+        if (this.questionsAnswered >= 3) {
           this.completeLevel();
+        } else {
+          this.showQuestion(questionIndex + 1);
         }
       });
     } else {
-      // Wrong answer
-      this.showFeedback(option.feedback, false, () => {
-        // Allow retry
-      });
+      this.showFeedback(option.feedback, false, () => {});
     }
   }
 
@@ -379,7 +371,7 @@ export class TutorialScene extends Phaser.Scene {
     const { width, height } = this.cameras.main;
     
     const gameState = this.registry.get('gameState');
-    gameState.sabedoria += 50; // Bonus for completing level
+    gameState.sabedoria += 30;
     this.registry.set('gameState', gameState);
     localStorage.setItem('sabedoria', gameState.sabedoria.toString());
     this.game.events.emit('updateHUD');
@@ -389,11 +381,9 @@ export class TutorialScene extends Phaser.Scene {
     overlay.setDepth(4000);
     
     const text = this.add.text(width / 2, height / 2,
-      '🎉 TUTORIAL COMPLETO! 🎉\n\n' +
-      'Você ganhou +50 💡 de bônus!\n\n' +
-      'Você aprendeu sobre:\n' +
-      '• Necessidades vs Desejos\n' +
-      '• Poupar para objetivos\n\n' +
+      '🎉 NÍVEL 1 COMPLETO! 🎉\n\n' +
+      'Você ganhou +30 💡 de bônus!\n\n' +
+      'Aprendeu sobre guardar dinheiro!\n\n' +
       'Total de Sabedoria: ' + gameState.sabedoria + ' 💡\n\n' +
       'Clique para o próximo nível', {
       fontSize: '22px',
@@ -409,7 +399,7 @@ export class TutorialScene extends Phaser.Scene {
     
     overlay.setInteractive();
     overlay.once('pointerdown', () => {
-      this.scene.start('Level1Scene');
+      this.scene.start('Level2Scene');
     });
   }
 }
