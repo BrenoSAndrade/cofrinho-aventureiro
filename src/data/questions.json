@@ -13,7 +13,7 @@
         "id": "B",
         "text": "Guardar em um cofrinho para um objetivo",
         "correct": true,
-        "feedback": "Muito bem! Guardar para um objetivo é uma boa ideia. +10 Sabedoria 💡"
+        "feedback": "Muito bem! Guardar para um objetivo é uma boa ideia. +10 PSF."
       },
       {
         "id": "C",
@@ -38,7 +38,7 @@
           "id": "B",
           "text": "Comida para o dia",
           "correct": true,
-          "feedback": "Correto — necessidades são coisas que precisamos para viver. +10 Sabedoria 💡 (Explicação curta: comida, casa, roupa.)"
+          "feedback": "Correto — necessidades são coisas que precisamos para viver. +10 PSF. (Explicação curta: comida, casa, roupa.)"
         },
         {
           "id": "C",
@@ -56,7 +56,7 @@
           "id": "A",
           "text": "Guardar parte das suas moedas todo mês para comprar depois",
           "correct": true,
-          "feedback": "Ótimo! Planejar e poupar é uma boa estratégia. +10 Sabedoria 💡"
+          "feedback": "Ótimo! Planejar e poupar é uma boa estratégia. +10 PSF."
         },
         {
           "id": "B",

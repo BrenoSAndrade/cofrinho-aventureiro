@@ -45,7 +45,7 @@ export class PreTutorialScene extends Phaser.Scene {
     this.createCoin(220, height - 160);
     this.createCoin(420, height - 220);
     this.createCoin(620, height - 160);
-    this.createCoin(450, height - 80);
+    this.createCoin(300, height - 80);
     this.createCoin(500, height - 80);
     this.createCoin(100, height - 80);
 
@@ -227,18 +227,7 @@ export class PreTutorialScene extends Phaser.Scene {
   }
 
   nearPortal(player: any, portal: any) {
-    // Check if player is still overlapping the portal
-    const isOverlapping = Phaser.Geom.Intersects.RectangleToRectangle(
-      player.getBounds(),
-      portal.getBounds()
-    );
-    
-    if (!isOverlapping && this.canInteract) {
-      // Player left the portal area, reset interaction flag
-      this.canInteract = false;
-    }
-    
-    if (!this.questionAnswered && !this.canInteract && isOverlapping) {
+    if (!this.questionAnswered && !this.canInteract) {
       this.canInteract = true;
       this.showQuestion();
     }
