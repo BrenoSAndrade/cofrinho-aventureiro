@@ -8,15 +8,14 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Pixel Art Color Palette */
     --background: 210 100% 97%;
     --foreground: 220 20% 20%;
 
-    --card: 221 39% 30%;
-    --card-foreground: 45 100% 51%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 20%;
 
-    --popover: 221 39% 30%;
-    --popover-foreground: 45 100% 51%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 20%;
 
     --primary: 45 100% 51%;
     --primary-foreground: 220 20% 20%;
@@ -27,49 +26,52 @@ All colors MUST be HSL.
     --muted: 210 40% 90%;
     --muted-foreground: 220 15% 55%;
 
-    --accent: 265 56% 65%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 174 45% 60%;
+    --accent-foreground: 220 20% 20%;
 
-    --success: 139 77% 45%;
-    --success-foreground: 0 0% 100%;
+    --success: 95 60% 60%;
+    --success-foreground: 220 20% 20%;
 
-    --destructive: 11 100% 45%;
+    --destructive: 0 80% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 45 100% 51%;
+    --border: 214 30% 85%;
     --input: 214 30% 85%;
     --ring: 45 100% 51%;
 
-    --radius: 0rem;
+    --radius: 0.75rem;
     
-    /* Pixel Art Game Colors */
-    --game-sky: 197 100% 68%;
-    --game-ground: 139 77% 45%;
-    --game-coin: 45 100% 50%;
-    --game-platform: 25 100% 32%;
-    --game-player: 11 100% 45%;
-    --game-npc: 328 100% 73%;
-    --game-portal-purple: 265 56% 65%;
-    --game-portal-cyan: 180 78% 57%;
+    /* Game specific colors */
+    --game-sky: 200 100% 85%;
+    --game-grass: 120 60% 50%;
+    --game-coin: 45 100% 51%;
     
     /* Gradients */
     --gradient-hero: linear-gradient(135deg, hsl(45 100% 51%) 0%, hsl(25 100% 63%) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(221 39% 30%) 0%, hsl(221 39% 25%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(210 100% 98%) 100%);
     
-    /* Shadows - Pixel art style (no blur) */
-    --shadow-lg: 4px 4px 0 hsl(0 0% 0% / 0.3);
-    --shadow-button: 0 4px 0 hsl(25 100% 40%);
+    /* Shadows */
+    --shadow-lg: 0 10px 40px -10px hsl(45 100% 51% / 0.3);
+    --shadow-button: 0 4px 0 hsl(45 80% 35%);
     
     /* Animations */
     --transition-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
+
     --sidebar-foreground: 240 5.3% 26.1%;
+
     --sidebar-primary: 240 5.9% 10%;
+
     --sidebar-primary-foreground: 0 0% 98%;
+
     --sidebar-accent: 240 4.8% 95.9%;
+
     --sidebar-accent-foreground: 240 5.9% 10%;
+
     --sidebar-border: 220 13% 91%;
+
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
@@ -114,10 +116,7 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Press Start 2P', 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', cursive, sans-serif;
-    image-rendering: pixelated;
-    image-rendering: -moz-crisp-edges;
-    image-rendering: crisp-edges;
+    font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', cursive, sans-serif;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -127,11 +126,7 @@ All colors MUST be HSL.
 
 @layer utilities {
   .text-shadow-sm {
-    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.8);
-  }
-  
-  .pixel-text-shadow {
-    text-shadow: 2px 2px 0 rgba(0, 0, 0, 1);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
   }
   
   .pixel-corners {
