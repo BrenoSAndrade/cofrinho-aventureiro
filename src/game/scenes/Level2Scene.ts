@@ -22,15 +22,15 @@ export class Level2Scene extends Phaser.Scene {
     // Background
     this.add.rectangle(0, 0, width, height, 0x87CEEB).setOrigin(0);
     
-    // Add building silhouettes in background
-    this.createBuilding(100, height - 150, 60, 110, 0x696969);
-    this.createBuilding(280, height - 180, 80, 140, 0x808080);
-    this.createBuilding(500, height - 130, 70, 90, 0x696969);
-    this.createBuilding(680, height - 160, 75, 120, 0x778899);
+    // Add building silhouettes in background (with depth)
+    this.createBuilding(100, height - 205, 60, 110, 0x696969);
+    this.createBuilding(280, height - 230, 80, 140, 0x808080);
+    this.createBuilding(500, height - 185, 70, 90, 0x696969);
+    this.createBuilding(680, height - 220, 75, 120, 0x778899);
     
-    // Add motivational signs
-    this.createSign(140, height - 200, 'Pense Antes\nde Comprar!');
-    this.createSign(600, height - 250, 'Economizar\né Legal!');
+    // Add motivational signs (with depth)
+    this.createSign(200, height - 130, 'Pense Antes\nde Comprar!');
+    this.createSign(550, height - 180, 'Economizar\né Legal!');
     
     // Ground (sidewalk)
     this.add.rectangle(0, height - 40, width, 40, 0x95E77D).setOrigin(0);
@@ -42,6 +42,8 @@ export class Level2Scene extends Phaser.Scene {
 
     // Create ground platform
     const ground = this.add.rectangle(width / 2, height - 20, width, 40, 0x95E77D);
+    ground.setOrigin(0.5);
+    this.physics.add.existing(ground, true);
     this.platforms.add(ground);
 
     // Platforms at different heights (city style - bridge between buildings)
@@ -128,12 +130,16 @@ export class Level2Scene extends Phaser.Scene {
 
   createPlatform(x: number, y: number, width: number, height: number) {
     const platform = this.add.rectangle(x, y, width, height, 0x8B4513);
+    platform.setOrigin(0.5);
+    platform.setStrokeStyle(2, 0x654321);
+    this.physics.add.existing(platform, true);
     this.platforms.add(platform);
   }
 
   createBuilding(x: number, y: number, width: number, height: number, color: number) {
     const building = this.add.rectangle(x, y, width, height, color);
     building.setStrokeStyle(2, 0x000000);
+    building.setDepth(-1);
     
     // Add windows
     for (let i = 0; i < 3; i++) {
@@ -142,6 +148,7 @@ export class Level2Scene extends Phaser.Scene {
         const windowY = y - height/3 + i * height/4;
         const win = this.add.rectangle(windowX, windowY, 12, 12, 0xFFFF99);
         win.setStrokeStyle(1, 0x000000);
+        win.setDepth(-1);
       }
     }
   }
@@ -149,6 +156,7 @@ export class Level2Scene extends Phaser.Scene {
   createSign(x: number, y: number, text: string) {
     const sign = this.add.rectangle(x, y, 80, 50, 0xFFFFFF);
     sign.setStrokeStyle(2, 0x000000);
+    sign.setDepth(-1);
     
     const signText = this.add.text(x, y, text, {
       fontSize: '11px',
@@ -157,14 +165,18 @@ export class Level2Scene extends Phaser.Scene {
       align: 'center',
     });
     signText.setOrigin(0.5);
+    signText.setDepth(-1);
     
     // Post
     const post = this.add.rectangle(x, y + 35, 4, 20, 0x8B4513);
+    post.setDepth(-1);
   }
 
   createObstacle(x: number, y: number, width: number, height: number) {
     const obstacle = this.add.rectangle(x, y, width, height, 0x654321);
+    obstacle.setOrigin(0.5);
     obstacle.setStrokeStyle(2, 0x000000);
+    this.physics.add.existing(obstacle, true);
     this.platforms.add(obstacle);
     
     // Add "X" marking
@@ -175,12 +187,16 @@ export class Level2Scene extends Phaser.Scene {
   createStackedObstacle(x: number, y: number, size: number) {
     // Bottom box
     const box1 = this.add.rectangle(x, y, size, size, 0x8B4513);
+    box1.setOrigin(0.5);
     box1.setStrokeStyle(2, 0x000000);
+    this.physics.add.existing(box1, true);
     this.platforms.add(box1);
     
     // Top box
     const box2 = this.add.rectangle(x, y - size, size, size, 0xA0522D);
+    box2.setOrigin(0.5);
     box2.setStrokeStyle(2, 0x000000);
+    this.physics.add.existing(box2, true);
     this.platforms.add(box2);
   }
 

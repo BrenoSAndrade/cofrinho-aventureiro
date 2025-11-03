@@ -22,10 +22,10 @@ export class Level1Scene extends Phaser.Scene {
     // Background
     this.add.rectangle(0, 0, width, height, 0x87CEEB).setOrigin(0);
     
-    // Add simple houses in background
-    this.createHouse(120, height - 180, 0xFFB6C1);
-    this.createHouse(380, height - 200, 0xFFA07A);
-    this.createHouse(620, height - 170, 0xDDA0DD);
+    // Add simple houses in background (with depth)
+    this.createHouse(120, height - 200, 0xFFB6C1);
+    this.createHouse(380, height - 220, 0xFFA07A);
+    this.createHouse(620, height - 190, 0xDDA0DD);
     
     // Ground (dirt)
     this.add.rectangle(0, height - 40, width, 40, 0x8B7355).setOrigin(0);
@@ -37,14 +37,20 @@ export class Level1Scene extends Phaser.Scene {
 
     // Create ground platform with holes
     const groundLeft = this.add.rectangle(150, height - 20, 300, 40, 0x8B7355);
+    groundLeft.setOrigin(0.5);
+    this.physics.add.existing(groundLeft, true);
     this.platforms.add(groundLeft);
     
     // Hole 1 (gap between platforms)
-    const groundMid = this.add.rectangle(350, height - 20, 250, 40, 0x8B7355);
+    const groundMid = this.add.rectangle(390, height - 20, 220, 40, 0x8B7355);
+    groundMid.setOrigin(0.5);
+    this.physics.add.existing(groundMid, true);
     this.platforms.add(groundMid);
     
     // Hole 2
-    const groundRight = this.add.rectangle(620, height - 20, 280, 40, 0x8B7355);
+    const groundRight = this.add.rectangle(650, height - 20, 300, 40, 0x8B7355);
+    groundRight.setOrigin(0.5);
+    this.physics.add.existing(groundRight, true);
     this.platforms.add(groundRight);
 
     // Low platforms for teaching jumps
@@ -130,12 +136,17 @@ export class Level1Scene extends Phaser.Scene {
 
   createPlatform(x: number, y: number, width: number, height: number) {
     const platform = this.add.rectangle(x, y, width, height, 0x8B4513);
+    platform.setOrigin(0.5);
+    platform.setStrokeStyle(2, 0x654321);
+    this.physics.add.existing(platform, true);
     this.platforms.add(platform);
   }
 
   createObstacle(x: number, y: number, width: number, height: number) {
     const obstacle = this.add.rectangle(x, y, width, height, 0x654321);
+    obstacle.setOrigin(0.5);
     obstacle.setStrokeStyle(2, 0x000000);
+    this.physics.add.existing(obstacle, true);
     this.platforms.add(obstacle);
   }
 
@@ -184,13 +195,16 @@ export class Level1Scene extends Phaser.Scene {
     // Simple house background decoration
     const house = this.add.rectangle(x, y, 50, 60, color);
     house.setStrokeStyle(2, 0x000000);
+    house.setDepth(-1);
     
     const roof = this.add.triangle(x, y - 40, 0, 20, 30, -10, -30, 20, 0xDC143C);
     roof.setStrokeStyle(2, 0x000000);
+    roof.setDepth(-1);
     
     // Window
     const window = this.add.rectangle(x, y - 10, 15, 15, 0xFFFFFF);
     window.setStrokeStyle(1, 0x000000);
+    window.setDepth(-1);
   }
 
   createGoal(x: number, y: number) {

@@ -22,19 +22,19 @@ export class Level3Scene extends Phaser.Scene {
     // Background (park style - lighter green)
     this.add.rectangle(0, 0, width, height, 0x87CEEB).setOrigin(0);
     
-    // Add trees in background
-    this.createTree(80, height - 150, 0x228B22);
-    this.createTree(250, height - 170, 0x32CD32);
-    this.createTree(450, height - 160, 0x228B22);
-    this.createTree(680, height - 155, 0x2E8B57);
+    // Add trees in background (with depth)
+    this.createTree(80, height - 200, 0x228B22);
+    this.createTree(250, height - 220, 0x32CD32);
+    this.createTree(450, height - 210, 0x228B22);
+    this.createTree(680, height - 205, 0x2E8B57);
     
-    // Add flowers
+    // Add flowers (with depth)
     this.createFlower(130, height - 70, 0xFF69B4);
     this.createFlower(380, height - 75, 0xFF1493);
     this.createFlower(600, height - 70, 0xFFB6C1);
     
-    // Add motivational sign
-    this.createMotivationalSign(400, height - 280, 'Sonhos se realizam\ncom planejamento!');
+    // Add motivational sign (with depth)
+    this.createMotivationalSign(400, height - 180, 'Sonhos se realizam\ncom planejamento!');
     
     // Ground (grass)
     this.add.rectangle(0, height - 40, width, 40, 0x228B22).setOrigin(0);
@@ -46,16 +46,22 @@ export class Level3Scene extends Phaser.Scene {
 
     // Create ground platform with 2 wide gaps
     const groundLeft = this.add.rectangle(130, height - 20, 260, 40, 0x228B22);
+    groundLeft.setOrigin(0.5);
+    this.physics.add.existing(groundLeft, true);
     this.platforms.add(groundLeft);
     
     // Wide gap 1 (3 blocks)
     
-    const groundMid = this.add.rectangle(390, height - 20, 240, 40, 0x228B22);
+    const groundMid = this.add.rectangle(400, height - 20, 260, 40, 0x228B22);
+    groundMid.setOrigin(0.5);
+    this.physics.add.existing(groundMid, true);
     this.platforms.add(groundMid);
     
     // Wide gap 2 (3 blocks)
     
-    const groundRight = this.add.rectangle(650, height - 20, 280, 40, 0x228B22);
+    const groundRight = this.add.rectangle(670, height - 20, 260, 40, 0x228B22);
+    groundRight.setOrigin(0.5);
+    this.physics.add.existing(groundRight, true);
     this.platforms.add(groundRight);
 
     // Longer, spaced platforms (teaching rhythm and patience)
@@ -149,17 +155,24 @@ export class Level3Scene extends Phaser.Scene {
 
   createPlatform(x: number, y: number, width: number, height: number) {
     const platform = this.add.rectangle(x, y, width, height, 0x8B4513);
+    platform.setOrigin(0.5);
+    platform.setStrokeStyle(2, 0x654321);
+    this.physics.add.existing(platform, true);
     this.platforms.add(platform);
   }
 
   createTree(x: number, y: number, color: number) {
     // Tree trunk
     const trunk = this.add.rectangle(x, y + 20, 15, 40, 0x8B4513);
+    trunk.setDepth(-1);
     
     // Tree foliage (3 circles)
     const foliage1 = this.add.circle(x, y - 10, 25, color);
+    foliage1.setDepth(-1);
     const foliage2 = this.add.circle(x - 15, y + 5, 20, color);
+    foliage2.setDepth(-1);
     const foliage3 = this.add.circle(x + 15, y + 5, 20, color);
+    foliage3.setDepth(-1);
   }
 
   createFlower(x: number, y: number, color: number) {
@@ -169,17 +182,21 @@ export class Level3Scene extends Phaser.Scene {
       const petalX = x + Math.cos(angle) * 8;
       const petalY = y + Math.sin(angle) * 8;
       const petal = this.add.circle(petalX, petalY, 5, color);
+      petal.setDepth(-1);
     }
     // Center
     const center = this.add.circle(x, y, 4, 0xFFFF00);
+    center.setDepth(-1);
     
     // Stem
     const stem = this.add.rectangle(x, y + 10, 2, 15, 0x228B22);
+    stem.setDepth(-1);
   }
 
   createMotivationalSign(x: number, y: number, text: string) {
     const sign = this.add.rectangle(x, y, 140, 60, 0xFFFFFF);
     sign.setStrokeStyle(3, 0xFFD700);
+    sign.setDepth(-1);
     
     const signText = this.add.text(x, y, text, {
       fontSize: '12px',
@@ -189,22 +206,31 @@ export class Level3Scene extends Phaser.Scene {
       lineSpacing: 4,
     });
     signText.setOrigin(0.5);
+    signText.setDepth(-1);
     
     // Decorative stars around sign
     const star1 = this.add.star(x - 60, y - 25, 4, 6, 10, 0xFFD700);
+    star1.setDepth(-1);
     const star2 = this.add.star(x + 60, y - 25, 4, 6, 10, 0xFFD700);
+    star2.setDepth(-1);
   }
 
   createWoodenBeam(x: number, y: number) {
     // Horizontal wooden beam obstacle
     const beam = this.add.rectangle(x, y, 50, 15, 0x8B4513);
+    beam.setOrigin(0.5);
     beam.setStrokeStyle(2, 0x654321);
+    this.physics.add.existing(beam, true);
     this.platforms.add(beam);
     
     // Support posts
     const post1 = this.add.rectangle(x - 20, y + 15, 8, 20, 0x654321);
+    post1.setOrigin(0.5);
+    this.physics.add.existing(post1, true);
     this.platforms.add(post1);
     const post2 = this.add.rectangle(x + 20, y + 15, 8, 20, 0x654321);
+    post2.setOrigin(0.5);
+    this.physics.add.existing(post2, true);
     this.platforms.add(post2);
   }
 
