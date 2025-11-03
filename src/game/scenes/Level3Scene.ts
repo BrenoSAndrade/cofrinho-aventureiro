@@ -22,6 +22,20 @@ export class Level3Scene extends Phaser.Scene {
     // Background (park style - lighter green)
     this.add.rectangle(0, 0, width, height, 0x87CEEB).setOrigin(0);
     
+    // Add trees in background
+    this.createTree(80, height - 150, 0x228B22);
+    this.createTree(250, height - 170, 0x32CD32);
+    this.createTree(450, height - 160, 0x228B22);
+    this.createTree(680, height - 155, 0x2E8B57);
+    
+    // Add flowers
+    this.createFlower(130, height - 70, 0xFF69B4);
+    this.createFlower(380, height - 75, 0xFF1493);
+    this.createFlower(600, height - 70, 0xFFB6C1);
+    
+    // Add motivational sign
+    this.createMotivationalSign(400, height - 280, 'Sonhos se realizam\ncom planejamento!');
+    
     // Ground (grass)
     this.add.rectangle(0, height - 40, width, 40, 0x228B22).setOrigin(0);
 
@@ -30,28 +44,53 @@ export class Level3Scene extends Phaser.Scene {
     this.coins = this.physics.add.staticGroup();
     this.portals = this.physics.add.staticGroup();
 
-    // Create ground platform
-    const ground = this.add.rectangle(width / 2, height - 20, width, 40, 0x228B22);
-    this.platforms.add(ground);
+    // Create ground platform with 2 wide gaps
+    const groundLeft = this.add.rectangle(130, height - 20, 260, 40, 0x228B22);
+    this.platforms.add(groundLeft);
+    
+    // Wide gap 1 (3 blocks)
+    
+    const groundMid = this.add.rectangle(390, height - 20, 240, 40, 0x228B22);
+    this.platforms.add(groundMid);
+    
+    // Wide gap 2 (3 blocks)
+    
+    const groundRight = this.add.rectangle(650, height - 20, 280, 40, 0x228B22);
+    this.platforms.add(groundRight);
 
-    // Longer platforms
-    this.createPlatform(180, height - 120, 140, 20);
-    this.createPlatform(400, height - 190, 160, 20);
-    this.createPlatform(630, height - 120, 140, 20);
+    // Longer, spaced platforms (teaching rhythm and patience)
+    this.createPlatform(200, height - 120, 160, 20);
+    this.createPlatform(440, height - 200, 180, 20);
+    this.createPlatform(680, height - 130, 150, 20);
 
-    // Small trap holes (visual only)
-    this.createTrap(320, height - 50);
-    this.createTrap(550, height - 50);
+    // Wooden beam obstacle to jump over
+    this.createWoodenBeam(340, height - 70);
 
-    // Create coins (some higher up)
+    // 15 coins - some hidden in higher/corner spots
+    // Ground level
+    this.createCoin(80, height - 80);
+    this.createCoin(120, height - 80);
+    this.createCoin(580, height - 80);
+    
+    // First platform
+    this.createCoin(160, height - 160);
     this.createCoin(200, height - 160);
-    this.createCoin(250, height - 160);
-    this.createCoin(420, height - 240);
-    this.createCoin(480, height - 240);
-    this.createCoin(650, height - 170);
-    this.createCoin(700, height - 170);
-    this.createCoin(100, height - 80);
-    this.createCoin(150, height - 80);
+    this.createCoin(240, height - 160);
+    
+    // High platform (hidden)
+    this.createCoin(400, height - 245);
+    this.createCoin(440, height - 245);
+    this.createCoin(480, height - 245);
+    this.createCoin(520, height - 245);
+    
+    // Third platform
+    this.createCoin(650, height - 175);
+    this.createCoin(690, height - 175);
+    this.createCoin(730, height - 175);
+    
+    // Corner spots (require good jumps)
+    this.createCoin(360, height - 140);
+    this.createCoin(620, height - 90);
 
     // Create player
     this.player = this.createPlayer(50, height - 100);
@@ -113,10 +152,60 @@ export class Level3Scene extends Phaser.Scene {
     this.platforms.add(platform);
   }
 
-  createTrap(x: number, y: number) {
-    // Visual trap indicator (darker rectangle on ground)
-    const trap = this.add.rectangle(x, y, 40, 10, 0x2F4F2F);
-    trap.setStrokeStyle(1, 0x000000);
+  createTree(x: number, y: number, color: number) {
+    // Tree trunk
+    const trunk = this.add.rectangle(x, y + 20, 15, 40, 0x8B4513);
+    
+    // Tree foliage (3 circles)
+    const foliage1 = this.add.circle(x, y - 10, 25, color);
+    const foliage2 = this.add.circle(x - 15, y + 5, 20, color);
+    const foliage3 = this.add.circle(x + 15, y + 5, 20, color);
+  }
+
+  createFlower(x: number, y: number, color: number) {
+    // Simple flower with 5 petals
+    for (let i = 0; i < 5; i++) {
+      const angle = (i * 72) * Math.PI / 180;
+      const petalX = x + Math.cos(angle) * 8;
+      const petalY = y + Math.sin(angle) * 8;
+      const petal = this.add.circle(petalX, petalY, 5, color);
+    }
+    // Center
+    const center = this.add.circle(x, y, 4, 0xFFFF00);
+    
+    // Stem
+    const stem = this.add.rectangle(x, y + 10, 2, 15, 0x228B22);
+  }
+
+  createMotivationalSign(x: number, y: number, text: string) {
+    const sign = this.add.rectangle(x, y, 140, 60, 0xFFFFFF);
+    sign.setStrokeStyle(3, 0xFFD700);
+    
+    const signText = this.add.text(x, y, text, {
+      fontSize: '12px',
+      color: '#000000',
+      fontFamily: 'Arial Black',
+      align: 'center',
+      lineSpacing: 4,
+    });
+    signText.setOrigin(0.5);
+    
+    // Decorative stars around sign
+    const star1 = this.add.star(x - 60, y - 25, 4, 6, 10, 0xFFD700);
+    const star2 = this.add.star(x + 60, y - 25, 4, 6, 10, 0xFFD700);
+  }
+
+  createWoodenBeam(x: number, y: number) {
+    // Horizontal wooden beam obstacle
+    const beam = this.add.rectangle(x, y, 50, 15, 0x8B4513);
+    beam.setStrokeStyle(2, 0x654321);
+    this.platforms.add(beam);
+    
+    // Support posts
+    const post1 = this.add.rectangle(x - 20, y + 15, 8, 20, 0x654321);
+    this.platforms.add(post1);
+    const post2 = this.add.rectangle(x + 20, y + 15, 8, 20, 0x654321);
+    this.platforms.add(post2);
   }
 
   createCoin(x: number, y: number) {
@@ -161,30 +250,77 @@ export class Level3Scene extends Phaser.Scene {
   }
 
   createGoal(x: number, y: number) {
-    // Create a golden piggy bank (final trophy)
+    // Create a large golden piggy bank with wings (dream symbol)
     const container = this.add.container(x, y);
     
-    const body = this.add.circle(0, 0, 28, 0xFFD700);
-    body.setStrokeStyle(3, 0xFFA500);
-    const snout = this.add.ellipse(12, 5, 18, 14, 0xFFE55C);
-    const eye1 = this.add.circle(-10, -10, 5, 0x000000);
-    const eye2 = this.add.circle(10, -10, 5, 0x000000);
+    // Rainbow glow
+    const glow1 = this.add.circle(0, 0, 60, 0xFFD700, 0.2);
+    const glow2 = this.add.circle(0, 0, 45, 0xFFA500, 0.3);
     
-    container.add([body, snout, eye1, eye2]);
+    // Wings
+    const wingLeft = this.add.ellipse(-25, 0, 20, 35, 0xFFFFFF, 0.8);
+    wingLeft.setStrokeStyle(2, 0xFFD700);
+    const wingRight = this.add.ellipse(25, 0, 20, 35, 0xFFFFFF, 0.8);
+    wingRight.setStrokeStyle(2, 0xFFD700);
     
-    // Add sparkle effect
-    const sparkle = this.add.star(0, -35, 5, 8, 15, 0xFFFFFF);
-    container.add(sparkle);
+    // Body
+    const body = this.add.circle(0, 0, 32, 0xFFD700);
+    body.setStrokeStyle(4, 0xFFA500);
     
+    const snout = this.add.ellipse(14, 6, 22, 16, 0xFFE55C);
+    const eye1 = this.add.circle(-12, -12, 6, 0x000000);
+    const eye2 = this.add.circle(12, -12, 6, 0x000000);
+    
+    // Coin slot
+    const slot = this.add.rectangle(0, -22, 18, 4, 0x000000);
+    
+    // Multiple sparkles
+    const sparkle1 = this.add.star(0, -45, 5, 10, 18, 0xFFFFFF);
+    const sparkle2 = this.add.star(-35, -20, 4, 6, 12, 0xFFFF00);
+    const sparkle3 = this.add.star(35, -20, 4, 6, 12, 0xFFFF00);
+    
+    container.add([glow1, glow2, wingLeft, wingRight, body, snout, eye1, eye2, slot, sparkle1, sparkle2, sparkle3]);
+    
+    // Sparkle rotation
     this.tweens.add({
-      targets: sparkle,
+      targets: [sparkle1, sparkle2, sparkle3],
       angle: 360,
       duration: 3000,
       repeat: -1,
     });
     
+    // Wings flapping
+    this.tweens.add({
+      targets: wingLeft,
+      y: -5,
+      duration: 800,
+      yoyo: true,
+      repeat: -1,
+      ease: 'Sine.easeInOut',
+    });
+    
+    this.tweens.add({
+      targets: wingRight,
+      y: -5,
+      duration: 800,
+      yoyo: true,
+      repeat: -1,
+      ease: 'Sine.easeInOut',
+      delay: 400,
+    });
+    
+    // Pulsing glow
+    this.tweens.add({
+      targets: [glow1, glow2],
+      alpha: 0.5,
+      duration: 1500,
+      yoyo: true,
+      repeat: -1,
+      ease: 'Sine.easeInOut',
+    });
+    
     // Add physics
-    const portal = this.add.rectangle(x, y, 60, 60, 0x000000, 0);
+    const portal = this.add.rectangle(x, y, 80, 80, 0x000000, 0);
     this.physics.add.existing(portal, true);
     this.portals.add(portal);
     (portal as any).reached = false;
@@ -192,8 +328,8 @@ export class Level3Scene extends Phaser.Scene {
     // Floating animation
     this.tweens.add({
       targets: container,
-      y: y - 8,
-      duration: 2000,
+      y: y - 12,
+      duration: 2500,
       yoyo: true,
       repeat: -1,
       ease: 'Sine.easeInOut',
@@ -392,31 +528,117 @@ export class Level3Scene extends Phaser.Scene {
     localStorage.setItem('sabedoria', gameState.sabedoria.toString());
     this.game.events.emit('updateHUD');
     
-    const overlay = this.add.rectangle(0, 0, width, height, 0x000000, 0.9);
+    // Create colorful background
+    const overlay = this.add.rectangle(0, 0, width, height, 0x4169E1, 0.95);
     overlay.setOrigin(0);
     overlay.setDepth(4000);
     
-    const text = this.add.text(width / 2, height / 2,
+    // Animated confetti
+    for (let i = 0; i < 30; i++) {
+      const confetti = this.add.circle(
+        Phaser.Math.Between(0, width),
+        Phaser.Math.Between(-100, height),
+        Phaser.Math.Between(3, 8),
+        Phaser.Math.Between(0xFF0000, 0xFFFFFF)
+      );
+      confetti.setDepth(4002);
+      
+      this.tweens.add({
+        targets: confetti,
+        y: height + 100,
+        x: confetti.x + Phaser.Math.Between(-50, 50),
+        duration: Phaser.Math.Between(3000, 5000),
+        repeat: -1,
+        delay: Phaser.Math.Between(0, 2000),
+      });
+    }
+    
+    const text = this.add.text(width / 2, height / 2 - 80,
       '🎉🎉 PARABÉNS! 🎉🎉\n\n' +
-      'VOCÊ COMPLETOU TODOS OS NÍVEIS!\n\n' +
+      'VOCÊ COMPLETOU SUA\nJORNADA FINANCEIRA!\n\n' +
       'Você ganhou +50 💡 de bônus final!\n\n' +
-      '🏆 MESTRE DA EDUCAÇÃO FINANCEIRA! 🏆\n\n' +
+      '🏆 EDUCADOR FINANCEIRO MIRIM 🏆\n\n' +
+      'Excelente! Agora você sabe planejar\ne guardar dinheiro para realizar\nseus sonhos!\n\n' +
       'Total de Sabedoria: ' + gameState.sabedoria + ' 💡\n' +
-      'Moedas coletadas: ' + gameState.coins + ' 🪙\n\n' +
-      'Clique para voltar ao menu', {
-      fontSize: '20px',
+      'Moedas coletadas: ' + gameState.coins + ' 🪙', {
+      fontSize: '18px',
       color: '#FFD700',
       fontFamily: 'Arial Black',
       align: 'center',
-      lineSpacing: 14,
+      lineSpacing: 10,
       stroke: '#000000',
       strokeThickness: 5,
     });
     text.setOrigin(0.5);
     text.setDepth(4001);
     
-    overlay.setInteractive();
-    overlay.once('pointerdown', () => {
+    // Create buttons
+    const buttonY = height / 2 + 160;
+    
+    // Play Again button
+    const playAgainBtn = this.add.rectangle(width / 2 - 90, buttonY, 160, 50, 0x32CD32);
+    playAgainBtn.setStrokeStyle(4, 0x228B22);
+    playAgainBtn.setDepth(4001);
+    playAgainBtn.setInteractive({ useHandCursor: true });
+    
+    const playAgainText = this.add.text(width / 2 - 90, buttonY, 'Jogar Novamente', {
+      fontSize: '14px',
+      color: '#FFFFFF',
+      fontFamily: 'Arial Black',
+    });
+    playAgainText.setOrigin(0.5);
+    playAgainText.setDepth(4002);
+    
+    // Menu button
+    const menuBtn = this.add.rectangle(width / 2 + 90, buttonY, 160, 50, 0xFF8C42);
+    menuBtn.setStrokeStyle(4, 0xE67339);
+    menuBtn.setDepth(4001);
+    menuBtn.setInteractive({ useHandCursor: true });
+    
+    const menuText = this.add.text(width / 2 + 90, buttonY, 'Voltar ao Menu', {
+      fontSize: '14px',
+      color: '#FFFFFF',
+      fontFamily: 'Arial Black',
+    });
+    menuText.setOrigin(0.5);
+    menuText.setDepth(4002);
+    
+    // Button interactions
+    playAgainBtn.on('pointerover', () => {
+      playAgainBtn.setScale(1.05);
+      playAgainText.setScale(1.05);
+    });
+    
+    playAgainBtn.on('pointerout', () => {
+      playAgainBtn.setScale(1);
+      playAgainText.setScale(1);
+    });
+    
+    playAgainBtn.on('pointerdown', () => {
+      // Reset game state
+      const newGameState = {
+        sabedoria: 0,
+        coins: 0,
+      };
+      this.registry.set('gameState', newGameState);
+      localStorage.setItem('sabedoria', '0');
+      localStorage.setItem('coins', '0');
+      this.game.events.emit('updateHUD');
+      
+      this.scene.start('PreTutorialScene');
+    });
+    
+    menuBtn.on('pointerover', () => {
+      menuBtn.setScale(1.05);
+      menuText.setScale(1.05);
+    });
+    
+    menuBtn.on('pointerout', () => {
+      menuBtn.setScale(1);
+      menuText.setScale(1);
+    });
+    
+    menuBtn.on('pointerdown', () => {
       this.scene.stop('HUDScene');
       this.scene.start('MenuScene');
     });

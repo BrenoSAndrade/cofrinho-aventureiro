@@ -22,7 +22,17 @@ export class Level2Scene extends Phaser.Scene {
     // Background
     this.add.rectangle(0, 0, width, height, 0x87CEEB).setOrigin(0);
     
-    // Ground
+    // Add building silhouettes in background
+    this.createBuilding(100, height - 150, 60, 110, 0x696969);
+    this.createBuilding(280, height - 180, 80, 140, 0x808080);
+    this.createBuilding(500, height - 130, 70, 90, 0x696969);
+    this.createBuilding(680, height - 160, 75, 120, 0x778899);
+    
+    // Add motivational signs
+    this.createSign(140, height - 200, 'Pense Antes\nde Comprar!');
+    this.createSign(600, height - 250, 'Economizar\né Legal!');
+    
+    // Ground (sidewalk)
     this.add.rectangle(0, height - 40, width, 40, 0x95E77D).setOrigin(0);
 
     // Physics groups
@@ -34,24 +44,32 @@ export class Level2Scene extends Phaser.Scene {
     const ground = this.add.rectangle(width / 2, height - 20, width, 40, 0x95E77D);
     this.platforms.add(ground);
 
-    // Platforms at different heights (city style)
-    this.createPlatform(120, height - 90, 100, 20);
-    this.createPlatform(280, height - 160, 100, 20);
-    this.createPlatform(460, height - 230, 100, 20);
-    this.createPlatform(640, height - 160, 100, 20);
+    // Platforms at different heights (city style - bridge between buildings)
+    this.createPlatform(140, height - 100, 120, 20);
+    this.createPlatform(320, height - 170, 100, 20);
+    this.createPlatform(480, height - 240, 120, 20); // Higher platform
+    this.createPlatform(660, height - 160, 110, 20);
 
-    // Obstacles (boxes)
-    this.createObstacle(350, height - 60, 35, 35);
-    this.createObstacle(550, height - 60, 35, 35);
+    // 3 Static obstacles (stacked boxes and concrete blocks)
+    this.createObstacle(260, height - 60, 35, 35); // Box
+    this.createStackedObstacle(420, height - 70, 40); // Stacked boxes
+    this.createObstacle(580, height - 60, 38, 38); // Concrete block
 
-    // Create coins
-    this.createCoin(150, height - 130);
-    this.createCoin(310, height - 200);
-    this.createCoin(490, height - 270);
-    this.createCoin(670, height - 200);
-    this.createCoin(400, height - 80);
-    this.createCoin(600, height - 80);
+    // Coins at different heights
+    // Low coins
+    this.createCoin(100, height - 80);
     this.createCoin(200, height - 80);
+    this.createCoin(340, height - 80);
+    
+    // Medium height
+    this.createCoin(170, height - 140);
+    this.createCoin(350, height - 210);
+    this.createCoin(690, height - 200);
+    
+    // High coins (require good jump timing)
+    this.createCoin(510, height - 285);
+    this.createCoin(540, height - 285);
+    this.createCoin(570, height - 285);
 
     // Create player
     this.player = this.createPlayer(50, height - 100);
@@ -113,10 +131,57 @@ export class Level2Scene extends Phaser.Scene {
     this.platforms.add(platform);
   }
 
+  createBuilding(x: number, y: number, width: number, height: number, color: number) {
+    const building = this.add.rectangle(x, y, width, height, color);
+    building.setStrokeStyle(2, 0x000000);
+    
+    // Add windows
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 2; j++) {
+        const windowX = x - width/4 + j * width/2;
+        const windowY = y - height/3 + i * height/4;
+        const win = this.add.rectangle(windowX, windowY, 12, 12, 0xFFFF99);
+        win.setStrokeStyle(1, 0x000000);
+      }
+    }
+  }
+
+  createSign(x: number, y: number, text: string) {
+    const sign = this.add.rectangle(x, y, 80, 50, 0xFFFFFF);
+    sign.setStrokeStyle(2, 0x000000);
+    
+    const signText = this.add.text(x, y, text, {
+      fontSize: '11px',
+      color: '#000000',
+      fontFamily: 'Arial Black',
+      align: 'center',
+    });
+    signText.setOrigin(0.5);
+    
+    // Post
+    const post = this.add.rectangle(x, y + 35, 4, 20, 0x8B4513);
+  }
+
   createObstacle(x: number, y: number, width: number, height: number) {
     const obstacle = this.add.rectangle(x, y, width, height, 0x654321);
     obstacle.setStrokeStyle(2, 0x000000);
     this.platforms.add(obstacle);
+    
+    // Add "X" marking
+    const line1 = this.add.line(x, y, -width/3, -height/3, width/3, height/3, 0x000000);
+    const line2 = this.add.line(x, y, width/3, -height/3, -width/3, height/3, 0x000000);
+  }
+
+  createStackedObstacle(x: number, y: number, size: number) {
+    // Bottom box
+    const box1 = this.add.rectangle(x, y, size, size, 0x8B4513);
+    box1.setStrokeStyle(2, 0x000000);
+    this.platforms.add(box1);
+    
+    // Top box
+    const box2 = this.add.rectangle(x, y - size, size, size, 0xA0522D);
+    box2.setStrokeStyle(2, 0x000000);
+    this.platforms.add(box2);
   }
 
   createCoin(x: number, y: number) {
@@ -161,15 +226,34 @@ export class Level2Scene extends Phaser.Scene {
   }
 
   createGoal(x: number, y: number) {
-    // Create a simple store/shop
-    const store = this.add.rectangle(x, y, 40, 50, 0x4169E1);
+    // Create a store/shop with "Good Choice" star
+    const store = this.add.rectangle(x, y, 50, 60, 0x4169E1);
     store.setStrokeStyle(3, 0x000000);
     
-    const roof = this.add.triangle(x, y - 35, 0, 20, 20, -10, -20, 20, 0xDC143C);
+    const roof = this.add.triangle(x, y - 40, 0, 20, 25, -15, -25, 20, 0xDC143C);
     roof.setStrokeStyle(2, 0x000000);
     
+    // Door
+    const door = this.add.rectangle(x, y + 15, 20, 30, 0x8B4513);
+    door.setStrokeStyle(2, 0x000000);
+    
+    // Window
+    const window = this.add.rectangle(x, y - 10, 20, 15, 0xADD8E6);
+    window.setStrokeStyle(2, 0x000000);
+    
+    // Green star (good choice symbol)
+    const star = this.add.star(x, y - 70, 5, 15, 25, 0x32CD32);
+    star.setStrokeStyle(2, 0x228B22);
+    
+    this.tweens.add({
+      targets: star,
+      angle: 360,
+      duration: 4000,
+      repeat: -1,
+    });
+    
     // Add physics
-    const portal = this.add.rectangle(x, y, 50, 60, 0x000000, 0);
+    const portal = this.add.rectangle(x, y, 60, 80, 0x000000, 0);
     this.physics.add.existing(portal, true);
     this.portals.add(portal);
     (portal as any).reached = false;
@@ -362,8 +446,10 @@ export class Level2Scene extends Phaser.Scene {
     
     const gameState = this.registry.get('gameState');
     gameState.sabedoria += 30;
+    gameState.coins += 15; // Reward bonus
     this.registry.set('gameState', gameState);
     localStorage.setItem('sabedoria', gameState.sabedoria.toString());
+    localStorage.setItem('coins', gameState.coins.toString());
     this.game.events.emit('updateHUD');
     
     const overlay = this.add.rectangle(0, 0, width, height, 0x000000, 0.8);
@@ -372,11 +458,12 @@ export class Level2Scene extends Phaser.Scene {
     
     const text = this.add.text(width / 2, height / 2,
       '🎉 NÍVEL 2 COMPLETO! 🎉\n\n' +
-      'Você ganhou +30 💡 de bônus!\n\n' +
-      'Aprendeu sobre escolhas inteligentes!\n\n' +
+      'Você ganhou +30 💡 de bônus!\n' +
+      '+15 🪙 moedas extras!\n\n' +
+      'Muito bem! Você fez escolhas\ninteligentes e pensou antes de gastar!\n\n' +
       'Total de Sabedoria: ' + gameState.sabedoria + ' 💡\n\n' +
-      'Clique para o próximo nível', {
-      fontSize: '22px',
+      'Prepare-se para o último nível!', {
+      fontSize: '20px',
       color: '#FFD700',
       fontFamily: 'Arial Black',
       align: 'center',
@@ -387,8 +474,8 @@ export class Level2Scene extends Phaser.Scene {
     text.setOrigin(0.5);
     text.setDepth(4001);
     
-    overlay.setInteractive();
-    overlay.once('pointerdown', () => {
+    // Auto-advance after 3 seconds
+    this.time.delayedCall(3000, () => {
       this.scene.start('Level3Scene');
     });
   }

@@ -22,6 +22,11 @@ export class Level1Scene extends Phaser.Scene {
     // Background
     this.add.rectangle(0, 0, width, height, 0x87CEEB).setOrigin(0);
     
+    // Add simple houses in background
+    this.createHouse(120, height - 180, 0xFFB6C1);
+    this.createHouse(380, height - 200, 0xFFA07A);
+    this.createHouse(620, height - 170, 0xDDA0DD);
+    
     // Ground (dirt)
     this.add.rectangle(0, height - 40, width, 40, 0x8B7355).setOrigin(0);
 
@@ -30,25 +35,43 @@ export class Level1Scene extends Phaser.Scene {
     this.coins = this.physics.add.staticGroup();
     this.portals = this.physics.add.staticGroup();
 
-    // Create ground platform
-    const ground = this.add.rectangle(width / 2, height - 20, width, 40, 0x8B7355);
-    this.platforms.add(ground);
+    // Create ground platform with holes
+    const groundLeft = this.add.rectangle(150, height - 20, 300, 40, 0x8B7355);
+    this.platforms.add(groundLeft);
+    
+    // Hole 1 (gap between platforms)
+    const groundMid = this.add.rectangle(350, height - 20, 250, 40, 0x8B7355);
+    this.platforms.add(groundMid);
+    
+    // Hole 2
+    const groundRight = this.add.rectangle(620, height - 20, 280, 40, 0x8B7355);
+    this.platforms.add(groundRight);
 
-    // Simple platforms (small holes to jump)
-    this.createPlatform(150, height - 100, 80, 20);
-    this.createPlatform(320, height - 140, 100, 20);
-    this.createPlatform(520, height - 100, 80, 20);
+    // Low platforms for teaching jumps
+    this.createPlatform(120, height - 100, 80, 20);
+    this.createPlatform(280, height - 110, 100, 20);
+    
+    // Static obstacle (wooden box)
+    this.createObstacle(420, height - 60, 35, 35);
 
-    // Static obstacle (box)
-    this.createObstacle(400, height - 60, 30, 30);
-
-    // Create coins
+    // 10 coins in groups
+    // Group 1 (ground level)
+    this.createCoin(80, height - 80);
+    this.createCoin(120, height - 80);
+    
+    // Group 2 (on first platform)
+    this.createCoin(150, height - 140);
     this.createCoin(180, height - 140);
-    this.createCoin(350, height - 180);
-    this.createCoin(550, height - 140);
-    this.createCoin(250, height - 80);
-    this.createCoin(450, height - 80);
-    this.createCoin(650, height - 80);
+    this.createCoin(210, height - 140);
+    
+    // Group 3 (on second platform)
+    this.createCoin(300, height - 150);
+    this.createCoin(330, height - 150);
+    
+    // Group 4 (after obstacle)
+    this.createCoin(500, height - 80);
+    this.createCoin(550, height - 80);
+    this.createCoin(600, height - 80);
 
     // Create player
     this.player = this.createPlayer(50, height - 100);
@@ -157,19 +180,40 @@ export class Level1Scene extends Phaser.Scene {
     });
   }
 
+  createHouse(x: number, y: number, color: number) {
+    // Simple house background decoration
+    const house = this.add.rectangle(x, y, 50, 60, color);
+    house.setStrokeStyle(2, 0x000000);
+    
+    const roof = this.add.triangle(x, y - 40, 0, 20, 30, -10, -30, 20, 0xDC143C);
+    roof.setStrokeStyle(2, 0x000000);
+    
+    // Window
+    const window = this.add.rectangle(x, y - 10, 15, 15, 0xFFFFFF);
+    window.setStrokeStyle(1, 0x000000);
+  }
+
   createGoal(x: number, y: number) {
-    // Create a piggy bank goal
+    // Create a large golden piggy bank
     const container = this.add.container(x, y);
     
-    const body = this.add.circle(0, 0, 24, 0xFF69B4);
-    const snout = this.add.ellipse(10, 5, 16, 12, 0xFFC0CB);
-    const eye1 = this.add.circle(-8, -8, 4, 0x000000);
-    const eye2 = this.add.circle(8, -8, 4, 0x000000);
+    // Golden glow background
+    const glow = this.add.circle(0, 0, 50, 0xFFD700, 0.3);
     
-    container.add([body, snout, eye1, eye2]);
+    const body = this.add.circle(0, 0, 30, 0xFFD700);
+    body.setStrokeStyle(3, 0xFFA500);
     
-    // Add physics to the container's position
-    const portal = this.add.rectangle(x, y, 50, 50, 0x000000, 0);
+    const snout = this.add.ellipse(12, 6, 20, 15, 0xFFE55C);
+    const eye1 = this.add.circle(-10, -10, 5, 0x000000);
+    const eye2 = this.add.circle(10, -10, 5, 0x000000);
+    
+    // Coin slot on top
+    const slot = this.add.rectangle(0, -20, 15, 3, 0x000000);
+    
+    container.add([glow, body, snout, eye1, eye2, slot]);
+    
+    // Add physics
+    const portal = this.add.rectangle(x, y, 70, 70, 0x000000, 0);
     this.physics.add.existing(portal, true);
     this.portals.add(portal);
     (portal as any).reached = false;
@@ -177,8 +221,18 @@ export class Level1Scene extends Phaser.Scene {
     // Floating animation
     this.tweens.add({
       targets: container,
-      y: y - 5,
+      y: y - 8,
       duration: 2000,
+      yoyo: true,
+      repeat: -1,
+      ease: 'Sine.easeInOut',
+    });
+    
+    // Pulsing glow
+    this.tweens.add({
+      targets: glow,
+      alpha: 0.6,
+      duration: 1500,
       yoyo: true,
       repeat: -1,
       ease: 'Sine.easeInOut',
@@ -383,10 +437,10 @@ export class Level1Scene extends Phaser.Scene {
     const text = this.add.text(width / 2, height / 2,
       '🎉 NÍVEL 1 COMPLETO! 🎉\n\n' +
       'Você ganhou +30 💡 de bônus!\n\n' +
-      'Aprendeu sobre guardar dinheiro!\n\n' +
+      'Parabéns! Você aprendeu que\nguardar dinheiro ajuda a realizar\nseus sonhos!\n\n' +
       'Total de Sabedoria: ' + gameState.sabedoria + ' 💡\n\n' +
-      'Clique para o próximo nível', {
-      fontSize: '22px',
+      'Prepare-se para o próximo desafio!', {
+      fontSize: '20px',
       color: '#FFD700',
       fontFamily: 'Arial Black',
       align: 'center',
@@ -397,8 +451,8 @@ export class Level1Scene extends Phaser.Scene {
     text.setOrigin(0.5);
     text.setDepth(4001);
     
-    overlay.setInteractive();
-    overlay.once('pointerdown', () => {
+    // Auto-advance after 3 seconds
+    this.time.delayedCall(3000, () => {
       this.scene.start('Level2Scene');
     });
   }
