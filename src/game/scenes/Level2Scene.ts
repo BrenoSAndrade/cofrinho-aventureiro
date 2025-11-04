@@ -109,10 +109,8 @@ export class Level2Scene extends Phaser.Scene {
     // Movement
     if (this.cursors.left.isDown || this.wasd.left.isDown) {
       playerBody.setVelocityX(-200);
-      this.player.setScale(-1, 1);
     } else if (this.cursors.right.isDown || this.wasd.right.isDown) {
       playerBody.setVelocityX(200);
-      this.player.setScale(1, 1);
     } else {
       playerBody.setVelocityX(0);
     }
@@ -176,15 +174,20 @@ export class Level2Scene extends Phaser.Scene {
   }
 
   createObstacle(x: number, y: number, width: number, height: number) {
-    const obstacle = this.add.rectangle(x, y, width, height, 0x654321);
+    const obstacle = this.add.rectangle(x, y, width, height, 0x696969);
     obstacle.setOrigin(0.5);
-    obstacle.setStrokeStyle(2, 0x000000);
+    obstacle.setStrokeStyle(3, 0x000000);
     this.physics.add.existing(obstacle, true);
     this.platforms.add(obstacle);
     
-    // Add "X" marking
-    const line1 = this.add.line(x, y, -width/3, -height/3, width/3, height/3, 0x000000);
-    const line2 = this.add.line(x, y, width/3, -height/3, -width/3, height/3, 0x000000);
+    // Add concrete texture (dots pattern)
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        const dotX = x - width/3 + (i * width/3);
+        const dotY = y - height/3 + (j * height/3);
+        const dot = this.add.circle(dotX, dotY, 2, 0x505050);
+      }
+    }
   }
 
   createStackedObstacle(x: number, y: number, size: number) {
@@ -408,6 +411,13 @@ export class Level2Scene extends Phaser.Scene {
         }
       });
     } else {
+      // Penalidade por resposta errada: perde 5 de sabedoria
+      const gameState = this.registry.get('gameState');
+      gameState.sabedoria = Math.max(0, gameState.sabedoria - 5);
+      this.registry.set('gameState', gameState);
+      localStorage.setItem('sabedoria', gameState.sabedoria.toString());
+      this.game.events.emit('updateHUD');
+      
       this.showFeedback(option.feedback, false, () => {});
     }
   }
@@ -422,17 +432,27 @@ export class Level2Scene extends Phaser.Scene {
     const feedbackBox = this.add.container(width / 2, height / 2);
     feedbackBox.setDepth(3001);
     
-    const bg = this.add.rectangle(0, 0, 550, 250, isCorrect ? 0x95E77D : 0xFF6B6B);
+    const bg = this.add.rectangle(0, 0, 550, 280, isCorrect ? 0x95E77D : 0xFF6B6B);
     bg.setStrokeStyle(4, 0x000000);
     
-    const icon = this.add.text(0, -80, isCorrect ? '✓' : '✗', {
+    const icon = this.add.text(0, -100, isCorrect ? '✓' : '✗', {
       fontSize: '48px',
       color: '#000000',
       fontFamily: 'Arial Black',
     });
     icon.setOrigin(0.5);
     
-    const feedbackText = this.add.text(0, -10, text, {
+    // Show penalty message for wrong answers
+    const penalty = !isCorrect ? this.add.text(0, -50, '-5 💡 Sabedoria', {
+      fontSize: '20px',
+      color: '#8B0000',
+      fontFamily: 'Arial Black',
+      stroke: '#FFFFFF',
+      strokeThickness: 2,
+    }) : null;
+    if (penalty) penalty.setOrigin(0.5);
+    
+    const feedbackText = this.add.text(0, 0, text, {
       fontSize: '16px',
       color: '#000000',
       fontFamily: 'Arial',
@@ -441,7 +461,7 @@ export class Level2Scene extends Phaser.Scene {
     });
     feedbackText.setOrigin(0.5);
     
-    const closeBtn = this.add.text(0, 80, isCorrect ? 'Continuar' : 'Tentar Novamente', {
+    const closeBtn = this.add.text(0, 100, isCorrect ? 'Continuar' : 'Tentar Novamente', {
       fontSize: '18px',
       color: '#000000',
       fontFamily: 'Arial Black',
@@ -451,7 +471,8 @@ export class Level2Scene extends Phaser.Scene {
     closeBtn.setOrigin(0.5);
     closeBtn.setInteractive();
     
-    feedbackBox.add([bg, icon, feedbackText, closeBtn]);
+    const elements = penalty ? [bg, icon, penalty, feedbackText, closeBtn] : [bg, icon, feedbackText, closeBtn];
+    feedbackBox.add(elements);
     
     closeBtn.on('pointerdown', () => {
       overlay.destroy();
