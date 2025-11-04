@@ -69,8 +69,11 @@ export class Level3Scene extends Phaser.Scene {
     this.createPlatform(440, height - 200, 180, 20);
     this.createPlatform(680, height - 130, 150, 20);
 
-    // Wooden beam obstacle to jump over
-    this.createWoodenBeam(340, height - 70);
+    // Multiple obstacles (wooden beams, rocks, and fences)
+    this.createWoodenBeam(290, height - 70);
+    this.createObstacle(360, height - 60, 40, 40); // Large rock
+    this.createWoodenBeam(550, height - 70);
+    this.createObstacle(620, height - 60, 35, 35); // Rock
 
     // 15 coins - some hidden in higher/corner spots
     // Ground level
@@ -213,6 +216,14 @@ export class Level3Scene extends Phaser.Scene {
     star1.setDepth(-1);
     const star2 = this.add.star(x + 60, y - 25, 4, 6, 10, 0xFFD700);
     star2.setDepth(-1);
+  }
+
+  createObstacle(x: number, y: number, width: number, height: number) {
+    const obstacle = this.add.rectangle(x, y, width, height, 0x808080);
+    obstacle.setOrigin(0.5);
+    obstacle.setStrokeStyle(2, 0x696969);
+    this.physics.add.existing(obstacle, true);
+    this.platforms.add(obstacle);
   }
 
   createWoodenBeam(x: number, y: number) {
@@ -579,27 +590,24 @@ export class Level3Scene extends Phaser.Scene {
       });
     }
     
-    const text = this.add.text(width / 2, height / 2 - 80,
-      '🎉🎉 PARABÉNS! 🎉🎉\n\n' +
-      'VOCÊ COMPLETOU SUA\nJORNADA FINANCEIRA!\n\n' +
-      'Você ganhou +50 💡 de bônus final!\n\n' +
-      '🏆 EDUCADOR FINANCEIRO MIRIM 🏆\n\n' +
-      'Excelente! Agora você sabe planejar\ne guardar dinheiro para realizar\nseus sonhos!\n\n' +
-      'Total de Sabedoria: ' + gameState.sabedoria + ' 💡\n' +
-      'Moedas coletadas: ' + gameState.coins + ' 🪙', {
-      fontSize: '18px',
+    const text = this.add.text(width / 2, height / 2 - 60,
+      '🎉 PARABÉNS! 🎉\n\n' +
+      'JORNADA FINANCEIRA COMPLETA!\n\n' +
+      '+50 💡 bônus | 🏆 Educador Mirim 🏆\n\n' +
+      'Sabedoria: ' + gameState.sabedoria + ' 💡 | Moedas: ' + gameState.coins + ' 🪙', {
+      fontSize: '16px',
       color: '#FFD700',
       fontFamily: 'Arial Black',
       align: 'center',
-      lineSpacing: 10,
+      lineSpacing: 8,
       stroke: '#000000',
-      strokeThickness: 5,
+      strokeThickness: 4,
     });
     text.setOrigin(0.5);
     text.setDepth(4001);
     
-    // Create buttons
-    const buttonY = height / 2 + 160;
+    // Create buttons (positioned to be visible on screen)
+    const buttonY = height / 2 + 80;
     
     // Play Again button
     const playAgainBtn = this.add.rectangle(width / 2 - 90, buttonY, 160, 50, 0x32CD32);

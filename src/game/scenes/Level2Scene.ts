@@ -52,10 +52,13 @@ export class Level2Scene extends Phaser.Scene {
     this.createPlatform(480, height - 240, 120, 20); // Higher platform
     this.createPlatform(660, height - 160, 110, 20);
 
-    // 3 Static obstacles (stacked boxes and concrete blocks)
-    this.createObstacle(260, height - 60, 35, 35); // Box
-    this.createStackedObstacle(420, height - 70, 40); // Stacked boxes
-    this.createObstacle(580, height - 60, 38, 38); // Concrete block
+    // Multiple obstacles (stacked boxes, concrete blocks, and barriers)
+    this.createObstacle(210, height - 60, 35, 35); // Box 1
+    this.createObstacle(260, height - 60, 35, 35); // Box 2
+    this.createStackedObstacle(380, height - 70, 40); // Stacked boxes
+    this.createObstacle(540, height - 60, 38, 38); // Concrete block 1
+    this.createObstacle(590, height - 60, 38, 38); // Concrete block 2
+    this.createObstacle(720, height - 75, 30, 50); // Tall barrier
 
     // Coins at different heights
     // Low coins

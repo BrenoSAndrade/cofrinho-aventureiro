@@ -55,10 +55,14 @@ export class Level1Scene extends Phaser.Scene {
 
     // Low platforms for teaching jumps
     this.createPlatform(120, height - 100, 80, 20);
-    this.createPlatform(280, height - 110, 100, 20);
+    this.createPlatform(280, height - 140, 100, 20);
+    this.createPlatform(470, height - 110, 90, 20);
     
-    // Static obstacle (wooden box)
-    this.createObstacle(420, height - 60, 35, 35);
+    // Multiple obstacles (wooden boxes and small walls)
+    this.createObstacle(200, height - 60, 35, 35); // Box 1
+    this.createObstacle(360, height - 60, 30, 30); // Box 2
+    this.createObstacle(520, height - 75, 40, 50); // Tall wall
+    this.createObstacle(620, height - 60, 35, 35); // Box 3
 
     // 10 coins in groups
     // Group 1 (ground level)
