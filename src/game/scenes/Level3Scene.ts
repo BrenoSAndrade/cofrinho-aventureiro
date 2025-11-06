@@ -19,19 +19,40 @@ export class Level3Scene extends Phaser.Scene {
   create() {
     const { width, height } = this.cameras.main;
 
-    // Sky background
-    this.add.rectangle(0, 0, width, height, 0x87CEEB).setOrigin(0);
+    // Sky background with gradient (park/nature atmosphere)
+    const skyTop = this.add.rectangle(0, 0, width, height / 2, 0x87CEEB).setOrigin(0);
+    skyTop.setDepth(-10);
+    const skyMiddle = this.add.rectangle(0, height / 3, width, height / 3, 0x9CD9F0).setOrigin(0);
+    skyMiddle.setDepth(-10);
+    const skyBottom = this.add.rectangle(0, 2 * height / 3, width, height / 3, 0xB0E0E6).setOrigin(0);
+    skyBottom.setDepth(-10);
     
-    // Sun
+    // Large sun with rays
     const sun = this.add.circle(650, 70, 40, 0xFFFF00);
-    sun.setDepth(-3);
-    const sunGlow = this.add.circle(650, 70, 55, 0xFFD700, 0.3);
-    sunGlow.setDepth(-3);
+    sun.setDepth(-9);
+    const sunGlow = this.add.circle(650, 70, 60, 0xFFD700, 0.3);
+    sunGlow.setDepth(-9);
     
-    // Clouds
-    this.createCloud(120, 65);
-    this.createCloud(350, 50);
-    this.createCloud(580, 75);
+    // Sun rays
+    for (let i = 0; i < 12; i++) {
+      const angle = (i * 30) * Math.PI / 180;
+      const rayLength = 30;
+      const x1 = 650 + Math.cos(angle) * 45;
+      const y1 = 70 + Math.sin(angle) * 45;
+      const x2 = 650 + Math.cos(angle) * (45 + rayLength);
+      const y2 = 70 + Math.sin(angle) * (45 + rayLength);
+      const ray = this.add.line(0, 0, x1, y1, x2, y2, 0xFFFF00, 0.5);
+      ray.setLineWidth(2);
+      ray.setDepth(-9);
+    }
+    
+    // Many clouds
+    this.createCloud(100, 60);
+    this.createCloud(240, 75);
+    this.createCloud(380, 55);
+    this.createCloud(520, 70);
+    this.createCloud(660, 80);
+    this.createCloud(760, 60);
     
     // Flying birds
     this.createBird(200, 100);
@@ -176,12 +197,32 @@ export class Level3Scene extends Phaser.Scene {
   }
 
   createPlayer(x: number, y: number): Phaser.GameObjects.Rectangle {
-    const player = this.add.rectangle(x, y, 32, 32, 0xFF8C42);
-    player.setScale(1, 1); // Ensure correct orientation
-    this.physics.add.existing(player);
-    const body = player.body as Phaser.Physics.Arcade.Body;
-    body.setCollideWorldBounds(true);
-    return player;
+    // Create a container for the player with a clear face
+    const container = this.add.container(x, y);
+    
+    // Body (rectangle)
+    const body = this.add.rectangle(0, 0, 32, 32, 0xFF8C42);
+    body.setStrokeStyle(2, 0xE67339);
+    
+    // Eyes (two circles at the top)
+    const leftEye = this.add.circle(-8, -6, 3, 0x000000);
+    const rightEye = this.add.circle(8, -6, 3, 0x000000);
+    
+    // Smile (using graphics for better control)
+    const graphics = this.add.graphics();
+    graphics.lineStyle(2, 0x000000);
+    graphics.arc(0, 2, 10, Phaser.Math.DegToRad(20), Phaser.Math.DegToRad(160), false);
+    graphics.strokePath();
+    
+    container.add([body, leftEye, rightEye, graphics]);
+    
+    // Add physics to container
+    this.physics.add.existing(container);
+    const physicsBody = container.body as Phaser.Physics.Arcade.Body;
+    physicsBody.setCollideWorldBounds(true);
+    physicsBody.setSize(32, 32);
+    
+    return container as any; // Return container for physics compatibility
   }
   
   createCloud(x: number, y: number) {
