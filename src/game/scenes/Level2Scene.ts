@@ -19,21 +19,42 @@ export class Level2Scene extends Phaser.Scene {
   create() {
     const { width, height } = this.cameras.main;
 
-    // Background
+    // Sky background
     this.add.rectangle(0, 0, width, height, 0x87CEEB).setOrigin(0);
     
-    // Add building silhouettes in background (with depth)
-    this.createBuilding(100, height - 205, 60, 110, 0x696969);
-    this.createBuilding(280, height - 230, 80, 140, 0x808080);
-    this.createBuilding(500, height - 185, 70, 90, 0x696969);
-    this.createBuilding(680, height - 220, 75, 120, 0x778899);
+    // Sun
+    const sun = this.add.circle(80, 50, 30, 0xFFFF00);
+    sun.setDepth(-3);
     
-    // Add motivational signs (with depth)
+    // Clouds
+    this.createCloud(250, 60);
+    this.createCloud(550, 45);
+    
+    // Add building silhouettes in background (cityscape)
+    this.createBuilding(80, height - 205, 60, 110, 0x696969);
+    this.createBuilding(180, height - 250, 70, 160, 0x778899);
+    this.createBuilding(300, height - 230, 80, 140, 0x808080);
+    this.createBuilding(420, height - 195, 65, 100, 0x696969);
+    this.createBuilding(530, height - 185, 70, 90, 0x696969);
+    this.createBuilding(640, height - 220, 75, 120, 0x778899);
+    this.createBuilding(740, height - 210, 60, 115, 0x808080);
+    
+    // Add motivational signs
     this.createSign(200, height - 130, 'Pense Antes\nde Comprar!');
     this.createSign(550, height - 180, 'Economizar\né Legal!');
     
-    // Ground (sidewalk)
-    this.add.rectangle(0, height - 40, width, 40, 0x95E77D).setOrigin(0);
+    // Traffic lights
+    this.createTrafficLight(340, height - 90);
+    this.createTrafficLight(620, height - 90);
+    
+    // Ground (sidewalk with lines)
+    this.add.rectangle(0, height - 40, width, 40, 0xA9A9A9).setOrigin(0);
+    
+    // Sidewalk lines
+    for (let i = 0; i < 8; i++) {
+      const lineX = i * 100 + 50;
+      this.add.rectangle(lineX, height - 20, 60, 2, 0xFFFFFF, 0.5);
+    }
 
     // Physics groups
     this.platforms = this.physics.add.staticGroup();
@@ -123,10 +144,35 @@ export class Level2Scene extends Phaser.Scene {
 
   createPlayer(x: number, y: number): Phaser.GameObjects.Rectangle {
     const player = this.add.rectangle(x, y, 32, 32, 0xFF8C42);
+    player.setScale(1, 1); // Ensure correct orientation
     this.physics.add.existing(player);
     const body = player.body as Phaser.Physics.Arcade.Body;
     body.setCollideWorldBounds(true);
     return player;
+  }
+  
+  createCloud(x: number, y: number) {
+    const cloud1 = this.add.ellipse(x, y, 40, 25, 0xFFFFFF, 0.8);
+    cloud1.setDepth(-3);
+    const cloud2 = this.add.ellipse(x - 15, y + 5, 30, 20, 0xFFFFFF, 0.8);
+    cloud2.setDepth(-3);
+    const cloud3 = this.add.ellipse(x + 15, y + 5, 30, 20, 0xFFFFFF, 0.8);
+    cloud3.setDepth(-3);
+  }
+  
+  createTrafficLight(x: number, y: number) {
+    const pole = this.add.rectangle(x, y, 4, 30, 0x000000);
+    pole.setDepth(-1);
+    
+    const box = this.add.rectangle(x, y - 30, 15, 35, 0x333333);
+    box.setDepth(-1);
+    
+    const redLight = this.add.circle(x, y - 40, 4, 0xFF0000);
+    redLight.setDepth(-1);
+    const yellowLight = this.add.circle(x, y - 30, 4, 0x888888);
+    yellowLight.setDepth(-1);
+    const greenLight = this.add.circle(x, y - 20, 4, 0x32CD32);
+    greenLight.setDepth(-1);
   }
 
   createPlatform(x: number, y: number, width: number, height: number) {
@@ -248,7 +294,7 @@ export class Level2Scene extends Phaser.Scene {
   }
 
   createGoal(x: number, y: number) {
-    // Create a store/shop with "Good Choice" star
+    // Create a store/shop (smart shopping destination)
     const store = this.add.rectangle(x, y, 50, 60, 0x4169E1);
     store.setStrokeStyle(3, 0x000000);
     
@@ -263,14 +309,24 @@ export class Level2Scene extends Phaser.Scene {
     const window = this.add.rectangle(x, y - 10, 20, 15, 0xADD8E6);
     window.setStrokeStyle(2, 0x000000);
     
-    // Green star (good choice symbol)
-    const star = this.add.star(x, y - 70, 5, 15, 25, 0x32CD32);
-    star.setStrokeStyle(2, 0x228B22);
+    // Store sign with text
+    const signBg = this.add.rectangle(x, y - 65, 45, 18, 0xFFFFFF);
+    signBg.setStrokeStyle(2, 0x000000);
     
+    const signText = this.add.text(x, y - 65, 'LOJA', {
+      fontSize: '10px',
+      color: '#000000',
+      fontFamily: 'Arial Black',
+    });
+    signText.setOrigin(0.5);
+    
+    // Glow effect
+    const glow = this.add.circle(x, y, 40, 0x4169E1, 0.2);
     this.tweens.add({
-      targets: star,
-      angle: 360,
-      duration: 4000,
+      targets: glow,
+      alpha: 0.4,
+      duration: 1500,
+      yoyo: true,
       repeat: -1,
     });
     

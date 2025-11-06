@@ -19,16 +19,36 @@ export class Level1Scene extends Phaser.Scene {
   create() {
     const { width, height } = this.cameras.main;
 
-    // Background
+    // Sky background
     this.add.rectangle(0, 0, width, height, 0x87CEEB).setOrigin(0);
     
-    // Add simple houses in background (with depth)
-    this.createHouse(120, height - 200, 0xFFB6C1);
-    this.createHouse(380, height - 220, 0xFFA07A);
-    this.createHouse(620, height - 190, 0xDDA0DD);
+    // Sun
+    const sun = this.add.circle(700, 60, 35, 0xFFFF00);
+    sun.setDepth(-2);
+    const sunGlow = this.add.circle(700, 60, 45, 0xFFD700, 0.3);
+    sunGlow.setDepth(-2);
     
-    // Ground (dirt)
+    // Clouds
+    this.createCloud(150, 70);
+    this.createCloud(400, 50);
+    this.createCloud(650, 80);
+    
+    // Add houses in background (neighborhood)
+    this.createHouse(80, height - 200, 0xFFB6C1);
+    this.createHouse(200, height - 180, 0xFFA07A);
+    this.createHouse(320, height - 210, 0xDDA0DD);
+    this.createHouse(480, height - 190, 0x98D8C8);
+    this.createHouse(600, height - 200, 0xF7DC6F);
+    this.createHouse(720, height - 185, 0xF8B88B);
+    
+    // Ground (dirt path)
     this.add.rectangle(0, height - 40, width, 40, 0x8B7355).setOrigin(0);
+    
+    // Grass patches on ground
+    for (let i = 0; i < 10; i++) {
+      const grassX = i * 85 + 40;
+      this.add.rectangle(grassX, height - 38, 20, 4, 0x228B22, 0.6);
+    }
 
     // Physics groups
     this.platforms = this.physics.add.staticGroup();
@@ -130,10 +150,20 @@ export class Level1Scene extends Phaser.Scene {
 
   createPlayer(x: number, y: number): Phaser.GameObjects.Rectangle {
     const player = this.add.rectangle(x, y, 32, 32, 0xFF8C42);
+    player.setScale(1, 1); // Ensure correct orientation
     this.physics.add.existing(player);
     const body = player.body as Phaser.Physics.Arcade.Body;
     body.setCollideWorldBounds(true);
     return player;
+  }
+  
+  createCloud(x: number, y: number) {
+    const cloud1 = this.add.ellipse(x, y, 40, 25, 0xFFFFFF, 0.8);
+    cloud1.setDepth(-2);
+    const cloud2 = this.add.ellipse(x - 15, y + 5, 30, 20, 0xFFFFFF, 0.8);
+    cloud2.setDepth(-2);
+    const cloud3 = this.add.ellipse(x + 15, y + 5, 30, 20, 0xFFFFFF, 0.8);
+    cloud3.setDepth(-2);
   }
 
   createPlatform(x: number, y: number, width: number, height: number) {

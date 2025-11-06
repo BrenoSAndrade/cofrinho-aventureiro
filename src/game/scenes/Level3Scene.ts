@@ -19,25 +19,54 @@ export class Level3Scene extends Phaser.Scene {
   create() {
     const { width, height } = this.cameras.main;
 
-    // Background (park style - lighter green)
+    // Sky background
     this.add.rectangle(0, 0, width, height, 0x87CEEB).setOrigin(0);
     
-    // Add trees in background (with depth)
-    this.createTree(80, height - 200, 0x228B22);
-    this.createTree(250, height - 220, 0x32CD32);
-    this.createTree(450, height - 210, 0x228B22);
-    this.createTree(680, height - 205, 0x2E8B57);
+    // Sun
+    const sun = this.add.circle(650, 70, 40, 0xFFFF00);
+    sun.setDepth(-3);
+    const sunGlow = this.add.circle(650, 70, 55, 0xFFD700, 0.3);
+    sunGlow.setDepth(-3);
+    
+    // Clouds
+    this.createCloud(120, 65);
+    this.createCloud(350, 50);
+    this.createCloud(580, 75);
+    
+    // Flying birds
+    this.createBird(200, 100);
+    this.createBird(450, 120);
+    this.createBird(600, 90);
+    
+    // Add trees in background (forest-like)
+    this.createTree(60, height - 200, 0x228B22);
+    this.createTree(150, height - 220, 0x32CD32);
+    this.createTree(250, height - 210, 0x2E8B57);
+    this.createTree(370, height - 195, 0x228B22);
+    this.createTree(500, height - 210, 0x32CD32);
+    this.createTree(620, height - 205, 0x2E8B57);
+    this.createTree(730, height - 215, 0x228B22);
     
     // Add flowers (with depth)
-    this.createFlower(130, height - 70, 0xFF69B4);
-    this.createFlower(380, height - 75, 0xFF1493);
-    this.createFlower(600, height - 70, 0xFFB6C1);
+    this.createFlower(110, height - 70, 0xFF69B4);
+    this.createFlower(220, height - 72, 0xFF1493);
+    this.createFlower(330, height - 75, 0xFFB6C1);
+    this.createFlower(480, height - 70, 0xFF69B4);
+    this.createFlower(590, height - 70, 0xFF1493);
+    this.createFlower(700, height - 72, 0xFFB6C1);
     
-    // Add motivational sign (with depth)
+    // Add motivational sign
     this.createMotivationalSign(400, height - 180, 'Sonhos se realizam\ncom planejamento!');
     
-    // Ground (grass)
+    // Ground (grass with patches)
     this.add.rectangle(0, height - 40, width, 40, 0x228B22).setOrigin(0);
+    
+    // Grass detail
+    for (let i = 0; i < 15; i++) {
+      const grassX = i * 55 + 30;
+      this.add.rectangle(grassX, height - 38, 15, 3, 0x32CD32, 0.7);
+      this.add.rectangle(grassX + 10, height - 36, 12, 3, 0x2E8B57, 0.6);
+    }
 
     // Physics groups
     this.platforms = this.physics.add.staticGroup();
@@ -148,10 +177,41 @@ export class Level3Scene extends Phaser.Scene {
 
   createPlayer(x: number, y: number): Phaser.GameObjects.Rectangle {
     const player = this.add.rectangle(x, y, 32, 32, 0xFF8C42);
+    player.setScale(1, 1); // Ensure correct orientation
     this.physics.add.existing(player);
     const body = player.body as Phaser.Physics.Arcade.Body;
     body.setCollideWorldBounds(true);
     return player;
+  }
+  
+  createCloud(x: number, y: number) {
+    const cloud1 = this.add.ellipse(x, y, 45, 28, 0xFFFFFF, 0.9);
+    cloud1.setDepth(-3);
+    const cloud2 = this.add.ellipse(x - 18, y + 5, 32, 22, 0xFFFFFF, 0.9);
+    cloud2.setDepth(-3);
+    const cloud3 = this.add.ellipse(x + 18, y + 5, 32, 22, 0xFFFFFF, 0.9);
+    cloud3.setDepth(-3);
+  }
+  
+  createBird(x: number, y: number) {
+    // Simple bird shape (V)
+    const bird = this.add.text(x, y, 'v', {
+      fontSize: '14px',
+      color: '#000000',
+      fontFamily: 'Arial',
+    });
+    bird.setDepth(-2);
+    bird.setRotation(-0.2);
+    
+    // Flying animation
+    this.tweens.add({
+      targets: bird,
+      x: x + 150,
+      y: y + Phaser.Math.Between(-20, 20),
+      duration: 8000,
+      repeat: -1,
+      yoyo: true,
+    });
   }
 
   createPlatform(x: number, y: number, width: number, height: number) {
