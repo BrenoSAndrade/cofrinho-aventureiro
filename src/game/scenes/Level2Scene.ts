@@ -104,8 +104,8 @@ export class Level2Scene extends Phaser.Scene {
     this.createCoin(540, height - 285);
     this.createCoin(570, height - 285);
 
-    // Create player
-    this.player = this.createPlayer(50, height - 100);
+    // Create player on the ground
+    this.player = this.createPlayer(50, height - 60);
 
     // Create shop/store at the end (goal)
     this.createGoal(730, height - 80);
@@ -161,10 +161,11 @@ export class Level2Scene extends Phaser.Scene {
     const leftEye = this.add.circle(-8, -6, 3, 0x000000);
     const rightEye = this.add.circle(8, -6, 3, 0x000000);
     
-    // Smile (using graphics for better control)
+    // Smile (arc pointing upward for smile)
     const graphics = this.add.graphics();
     graphics.lineStyle(2, 0x000000);
-    graphics.arc(0, 2, 10, Phaser.Math.DegToRad(20), Phaser.Math.DegToRad(160), false);
+    graphics.beginPath();
+    graphics.arc(0, 0, 8, Phaser.Math.DegToRad(30), Phaser.Math.DegToRad(150), false);
     graphics.strokePath();
     
     container.add([body, leftEye, rightEye, graphics]);
@@ -230,7 +231,7 @@ export class Level2Scene extends Phaser.Scene {
   createSign(x: number, y: number, text: string) {
     const sign = this.add.rectangle(x, y, 80, 50, 0xFFFFFF);
     sign.setStrokeStyle(2, 0x000000);
-    sign.setDepth(-1);
+    sign.setDepth(10); // In front of obstacles
     
     const signText = this.add.text(x, y, text, {
       fontSize: '11px',
@@ -239,11 +240,11 @@ export class Level2Scene extends Phaser.Scene {
       align: 'center',
     });
     signText.setOrigin(0.5);
-    signText.setDepth(-1);
+    signText.setDepth(11); // Text on top of sign
     
     // Post
     const post = this.add.rectangle(x, y + 35, 4, 20, 0x8B4513);
-    post.setDepth(-1);
+    post.setDepth(10);
   }
 
   createObstacle(x: number, y: number, width: number, height: number) {

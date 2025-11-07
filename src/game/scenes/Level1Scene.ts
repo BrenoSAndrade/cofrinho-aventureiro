@@ -121,8 +121,8 @@ export class Level1Scene extends Phaser.Scene {
     this.createCoin(550, height - 80);
     this.createCoin(600, height - 80);
 
-    // Create player
-    this.player = this.createPlayer(50, height - 100);
+    // Create player on the ground
+    this.player = this.createPlayer(50, height - 60);
 
     // Create piggy bank at the end (goal)
     this.createGoal(720, height - 80);
@@ -178,10 +178,11 @@ export class Level1Scene extends Phaser.Scene {
     const leftEye = this.add.circle(-8, -6, 3, 0x000000);
     const rightEye = this.add.circle(8, -6, 3, 0x000000);
     
-    // Smile (using graphics for better control)
+    // Smile (arc pointing upward for smile)
     const graphics = this.add.graphics();
     graphics.lineStyle(2, 0x000000);
-    graphics.arc(0, 2, 10, Phaser.Math.DegToRad(20), Phaser.Math.DegToRad(160), false);
+    graphics.beginPath();
+    graphics.arc(0, 0, 8, Phaser.Math.DegToRad(30), Phaser.Math.DegToRad(150), false);
     graphics.strokePath();
     
     container.add([body, leftEye, rightEye, graphics]);
@@ -273,8 +274,8 @@ export class Level1Scene extends Phaser.Scene {
     house.setStrokeStyle(2, 0x000000);
     house.setDepth(-1);
     
-    // Proper triangle roof pointing upward
-    const roof = this.add.triangle(x, y - 30, 25, 10, 0, -20, -25, 10, 0xDC143C);
+    // Proper triangle roof pointing upward (centered on house)
+    const roof = this.add.triangle(x, y - 30, 25, 0, 0, -30, -25, 0, 0xDC143C);
     roof.setStrokeStyle(2, 0x000000);
     roof.setDepth(-1);
     
