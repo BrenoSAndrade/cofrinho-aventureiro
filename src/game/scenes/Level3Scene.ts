@@ -59,25 +59,25 @@ export class Level3Scene extends Phaser.Scene {
     this.createBird(450, 120);
     this.createBird(600, 90);
     
-    // Add trees in background (forest-like)
-    this.createTree(60, height - 200, 0x228B22);
-    this.createTree(150, height - 220, 0x32CD32);
-    this.createTree(250, height - 210, 0x2E8B57);
-    this.createTree(370, height - 195, 0x228B22);
-    this.createTree(500, height - 210, 0x32CD32);
-    this.createTree(620, height - 205, 0x2E8B57);
-    this.createTree(730, height - 215, 0x228B22);
+    // Add trees in background (forest-like) - positioned on the ground
+    this.createTree(60, height - 80, 0x228B22);
+    this.createTree(150, height - 80, 0x32CD32);
+    this.createTree(250, height - 80, 0x2E8B57);
+    this.createTree(370, height - 80, 0x228B22);
+    this.createTree(500, height - 80, 0x32CD32);
+    this.createTree(620, height - 80, 0x2E8B57);
+    this.createTree(730, height - 80, 0x228B22);
     
-    // Add flowers (with depth)
-    this.createFlower(110, height - 70, 0xFF69B4);
-    this.createFlower(220, height - 72, 0xFF1493);
-    this.createFlower(330, height - 75, 0xFFB6C1);
-    this.createFlower(480, height - 70, 0xFF69B4);
-    this.createFlower(590, height - 70, 0xFF1493);
-    this.createFlower(700, height - 72, 0xFFB6C1);
+    // Add flowers - positioned on the ground
+    this.createFlower(110, height - 48, 0xFF69B4);
+    this.createFlower(220, height - 48, 0xFF1493);
+    this.createFlower(330, height - 48, 0xFFB6C1);
+    this.createFlower(480, height - 48, 0xFF69B4);
+    this.createFlower(590, height - 48, 0xFF1493);
+    this.createFlower(700, height - 48, 0xFFB6C1);
     
-    // Add motivational sign
-    this.createMotivationalSign(400, height - 180, 'Sonhos se realizam\ncom planejamento!');
+    // Add motivational sign - positioned on the ground
+    this.createMotivationalSign(400, height - 85, 'Sonhos se realizam\ncom planejamento!');
     
     // Ground (grass with patches)
     this.add.rectangle(0, height - 40, width, 40, 0x228B22).setOrigin(0);

@@ -51,13 +51,13 @@ export class Level1Scene extends Phaser.Scene {
     this.createCloud(620, 75);
     this.createCloud(750, 65);
     
-    // Add houses in background (neighborhood)
-    this.createHouse(80, height - 200, 0xFFB6C1);
-    this.createHouse(200, height - 180, 0xFFA07A);
-    this.createHouse(320, height - 210, 0xDDA0DD);
-    this.createHouse(480, height - 190, 0x98D8C8);
-    this.createHouse(600, height - 200, 0xF7DC6F);
-    this.createHouse(720, height - 185, 0xF8B88B);
+    // Add houses in background (neighborhood) - positioned on the ground
+    this.createHouse(80, height - 70, 0xFFB6C1);
+    this.createHouse(200, height - 70, 0xFFA07A);
+    this.createHouse(320, height - 70, 0xDDA0DD);
+    this.createHouse(480, height - 70, 0x98D8C8);
+    this.createHouse(600, height - 70, 0xF7DC6F);
+    this.createHouse(720, height - 70, 0xF8B88B);
     
     // Ground (dirt path)
     this.add.rectangle(0, height - 40, width, 40, 0x8B7355).setOrigin(0);
@@ -268,19 +268,25 @@ export class Level1Scene extends Phaser.Scene {
   }
 
   createHouse(x: number, y: number, color: number) {
-    // Simple house background decoration
+    // Simple house background decoration - house body at ground level
     const house = this.add.rectangle(x, y, 50, 60, color);
     house.setStrokeStyle(2, 0x000000);
     house.setDepth(-1);
     
-    const roof = this.add.triangle(x, y - 40, 0, 20, 30, -10, -30, 20, 0xDC143C);
+    // Proper triangle roof pointing upward
+    const roof = this.add.triangle(x, y - 30, 25, 10, 0, -20, -25, 10, 0xDC143C);
     roof.setStrokeStyle(2, 0x000000);
     roof.setDepth(-1);
     
     // Window
-    const window = this.add.rectangle(x, y - 10, 15, 15, 0xFFFFFF);
+    const window = this.add.rectangle(x, y - 5, 15, 15, 0xFFFFFF);
     window.setStrokeStyle(1, 0x000000);
     window.setDepth(-1);
+    
+    // Door
+    const door = this.add.rectangle(x, y + 18, 12, 24, 0x8B4513);
+    door.setStrokeStyle(1, 0x000000);
+    door.setDepth(-1);
   }
 
   createGoal(x: number, y: number) {

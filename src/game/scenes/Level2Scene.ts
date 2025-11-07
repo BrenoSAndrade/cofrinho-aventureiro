@@ -37,22 +37,22 @@ export class Level2Scene extends Phaser.Scene {
     this.createCloud(520, 70);
     this.createCloud(680, 55);
     
-    // Add building silhouettes in background (cityscape)
-    this.createBuilding(80, height - 205, 60, 110, 0x696969);
-    this.createBuilding(180, height - 250, 70, 160, 0x778899);
-    this.createBuilding(300, height - 230, 80, 140, 0x808080);
-    this.createBuilding(420, height - 195, 65, 100, 0x696969);
-    this.createBuilding(530, height - 185, 70, 90, 0x696969);
-    this.createBuilding(640, height - 220, 75, 120, 0x778899);
-    this.createBuilding(740, height - 210, 60, 115, 0x808080);
+    // Add building silhouettes in background (cityscape) - positioned on the ground
+    this.createBuilding(80, height - 95, 60, 110, 0x696969);
+    this.createBuilding(180, height - 120, 70, 160, 0x778899);
+    this.createBuilding(300, height - 110, 80, 140, 0x808080);
+    this.createBuilding(420, height - 90, 65, 100, 0x696969);
+    this.createBuilding(530, height - 85, 70, 90, 0x696969);
+    this.createBuilding(640, height - 100, 75, 120, 0x778899);
+    this.createBuilding(740, height - 97, 60, 115, 0x808080);
     
-    // Add motivational signs
-    this.createSign(200, height - 130, 'Pense Antes\nde Comprar!');
-    this.createSign(550, height - 180, 'Economizar\né Legal!');
+    // Add motivational signs - positioned on the ground
+    this.createSign(200, height - 75, 'Pense Antes\nde Comprar!');
+    this.createSign(550, height - 75, 'Economizar\né Legal!');
     
-    // Traffic lights
-    this.createTrafficLight(340, height - 90);
-    this.createTrafficLight(620, height - 90);
+    // Traffic lights - positioned on the ground
+    this.createTrafficLight(340, height - 55);
+    this.createTrafficLight(620, height - 55);
     
     // Ground (sidewalk with lines)
     this.add.rectangle(0, height - 40, width, 40, 0xA9A9A9).setOrigin(0);
