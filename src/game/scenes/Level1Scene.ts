@@ -52,20 +52,20 @@ export class Level1Scene extends Phaser.Scene {
     this.createCloud(750, 65);
     
     // Add houses in background (neighborhood) - positioned on the ground
-    this.createHouse(80, height - 50, 0xFFB6C1);
-    this.createHouse(200, height - 50, 0xFFA07A);
-    this.createHouse(320, height - 50, 0xDDA0DD);
-    this.createHouse(480, height - 50, 0x98D8C8);
-    this.createHouse(600, height - 50, 0xF7DC6F);
-    this.createHouse(720, height - 50, 0xF8B88B);
+    this.createHouse(80, height - 70, 0xFFB6C1);
+    this.createHouse(200, height - 70, 0xFFA07A);
+    this.createHouse(320, height - 70, 0xDDA0DD);
+    this.createHouse(480, height - 70, 0x98D8C8);
+    this.createHouse(600, height - 70, 0xF7DC6F);
+    this.createHouse(720, height - 70, 0xF8B88B);
     
-    // Ground (dirt path) - aligned with physics platforms
-    this.add.rectangle(0, height - 20, width, 40, 0x8B7355).setOrigin(0);
+    // Ground (dirt path)
+    this.add.rectangle(0, height - 40, width, 40, 0x8B7355).setOrigin(0);
     
     // Grass patches on ground
     for (let i = 0; i < 10; i++) {
       const grassX = i * 85 + 40;
-      this.add.rectangle(grassX, height - 18, 20, 4, 0x228B22, 0.6);
+      this.add.rectangle(grassX, height - 38, 20, 4, 0x228B22, 0.6);
     }
 
     // Physics groups
@@ -97,15 +97,15 @@ export class Level1Scene extends Phaser.Scene {
     this.createPlatform(470, height - 110, 90, 20);
     
     // Multiple obstacles (wooden boxes and small walls)
-    this.createObstacle(200, height - 38, 35, 35); // Box 1
-    this.createObstacle(360, height - 38, 30, 30); // Box 2
-    this.createObstacle(520, height - 45, 40, 50); // Tall wall
-    this.createObstacle(620, height - 38, 35, 35); // Box 3
+    this.createObstacle(200, height - 60, 35, 35); // Box 1
+    this.createObstacle(360, height - 60, 30, 30); // Box 2
+    this.createObstacle(520, height - 75, 40, 50); // Tall wall
+    this.createObstacle(620, height - 60, 35, 35); // Box 3
 
     // 10 coins in groups
     // Group 1 (ground level)
-    this.createCoin(80, height - 60);
-    this.createCoin(120, height - 60);
+    this.createCoin(80, height - 80);
+    this.createCoin(120, height - 80);
     
     // Group 2 (on first platform)
     this.createCoin(150, height - 140);
@@ -113,19 +113,19 @@ export class Level1Scene extends Phaser.Scene {
     this.createCoin(210, height - 140);
     
     // Group 3 (on second platform)
-    this.createCoin(300, height - 180);
-    this.createCoin(330, height - 180);
+    this.createCoin(300, height - 150);
+    this.createCoin(330, height - 150);
     
     // Group 4 (after obstacle)
-    this.createCoin(500, height - 60);
-    this.createCoin(550, height - 60);
-    this.createCoin(600, height - 60);
+    this.createCoin(500, height - 80);
+    this.createCoin(550, height - 80);
+    this.createCoin(600, height - 80);
 
     // Create player on the ground
-    this.player = this.createPlayer(50, height - 52);
+    this.player = this.createPlayer(50, height - 60);
 
     // Create piggy bank at the end (goal)
-    this.createGoal(720, height - 60);
+    this.createGoal(720, height - 80);
 
     // Setup controls
     this.cursors = this.input.keyboard!.createCursorKeys();
@@ -275,7 +275,7 @@ export class Level1Scene extends Phaser.Scene {
     house.setDepth(-1);
     
     // Proper triangle roof pointing upward (centered on house)
-    const roof = this.add.triangle(x, y - 30, 0, 30, 25, -10, -25, -10, 0xDC143C);
+    const roof = this.add.triangle(x, y - 30, 25, 0, 0, -30, -25, 0, 0xDC143C);
     roof.setStrokeStyle(2, 0x000000);
     roof.setDepth(-1);
     
