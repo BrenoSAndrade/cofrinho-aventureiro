@@ -122,7 +122,7 @@ export class Level1Scene extends Phaser.Scene {
     this.createCoin(600, height - 80);
 
     // Create player on the ground
-    this.player = this.createPlayer(50, height - 72);
+    this.player = this.createPlayer(50, height - 56);
 
     // Create piggy bank at the end (goal)
     this.createGoal(720, height - 80);
@@ -192,6 +192,7 @@ export class Level1Scene extends Phaser.Scene {
     const physicsBody = container.body as Phaser.Physics.Arcade.Body;
     physicsBody.setCollideWorldBounds(true);
     physicsBody.setSize(32, 32);
+    physicsBody.setOffset(-16, -16);
     
     return container as any; // Return container for physics compatibility
   }
@@ -275,8 +276,16 @@ export class Level1Scene extends Phaser.Scene {
     house.setDepth(-1);
     
     // Proper triangle roof pointing upward (centered on house)
-    const roof = this.add.triangle(x, y - 45, 0, -15, -25, 15, 25, 15, 0xDC143C);
-    roof.setStrokeStyle(2, 0x000000);
+    const roof = this.add.graphics();
+    roof.fillStyle(0xDC143C, 1);
+    roof.lineStyle(2, 0x000000);
+    roof.beginPath();
+    roof.moveTo(x, y - 45);           // Topo do telhado
+    roof.lineTo(x - 25, y - 15);       // Canto esquerdo
+    roof.lineTo(x + 25, y - 15);       // Canto direito
+    roof.closePath();
+    roof.fillPath();
+    roof.strokePath();
     roof.setDepth(-1);
     
     // Window
