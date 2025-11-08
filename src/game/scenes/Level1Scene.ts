@@ -122,7 +122,7 @@ export class Level1Scene extends Phaser.Scene {
     this.createCoin(600, height - 80);
 
     // Create player on the ground
-    this.player = this.createPlayer(50, height - 60);
+    this.player = this.createPlayer(50, height - 56);
 
     // Create piggy bank at the end (goal)
     this.createGoal(720, height - 80);
@@ -275,7 +275,7 @@ export class Level1Scene extends Phaser.Scene {
     house.setDepth(-1);
     
     // Proper triangle roof pointing upward (centered on house)
-    const roof = this.add.triangle(x, y - 30, 25, 0, 0, -30, -25, 0, 0xDC143C);
+    const roof = this.add.triangle(x, y - 45, 0, 0, -25, 30, 25, 30, 0xDC143C);
     roof.setStrokeStyle(2, 0x000000);
     roof.setDepth(-1);
     
