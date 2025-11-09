@@ -152,7 +152,7 @@ export class Level3Scene extends Phaser.Scene {
     this.createCoin(620, height - 90);
 
     // Create player on the ground
-    this.player = this.createPlayer(50, height - 60);
+    this.player = this.createPlayer(50, height - 56);
 
     // Create golden piggy bank at the end (final goal)
     this.createGoal(730, height - 80);
@@ -222,6 +222,7 @@ export class Level3Scene extends Phaser.Scene {
     const physicsBody = container.body as Phaser.Physics.Arcade.Body;
     physicsBody.setCollideWorldBounds(true);
     physicsBody.setSize(32, 32);
+    physicsBody.setOffset(-16, -16);
     
     return container as any; // Return container for physics compatibility
   }

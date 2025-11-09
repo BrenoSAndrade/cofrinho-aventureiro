@@ -105,7 +105,7 @@ export class Level2Scene extends Phaser.Scene {
     this.createCoin(570, height - 285);
 
     // Create player on the ground
-    this.player = this.createPlayer(50, height - 60);
+    this.player = this.createPlayer(50, height - 56);
 
     // Create shop/store at the end (goal)
     this.createGoal(730, height - 80);
@@ -175,6 +175,7 @@ export class Level2Scene extends Phaser.Scene {
     const physicsBody = container.body as Phaser.Physics.Arcade.Body;
     physicsBody.setCollideWorldBounds(true);
     physicsBody.setSize(32, 32);
+    physicsBody.setOffset(-16, -16);
     
     return container as any; // Return container for physics compatibility
   }
